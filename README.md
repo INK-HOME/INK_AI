@@ -1,57 +1,24 @@
-# .INK — Public GitHub Bundle (Curated Surface)
+# .INK — Offensive Governance Engine
 
-.INK is the execution-governance layer for AI systems operating under real stakes.
+**Execution Authority Membrane for High-Stakes AI**
 
-This public repository is intentionally curated. It exposes the doctrine, proof surfaces, schemas, examples, and verifier tooling needed to understand and inspect the system **without exposing the full internal runtime codebase**.
+Compiles the objective governance floor that must be proven.  
+Enforces it at the runtime boundary via the True Membrane.  
+Proves every action with native Rust ProofCore.  
+Physically bonded in the steel rack unit.
 
-## Canonical doctrine
+**Status: ProofCore ACTIVE | Compiler Doctrine Locked | Canonical Profile Enforced**
 
-> .INK owns what must be proven.  
-> The customer owns what they prefer.  
-> The compiler derives necessity, never preference.
+- Default profile: **proof_minimum** — objective floor only. Customer extensions rejected.
+- Extended profile: subjective overlays hashed and isolated above the floor.
+- Runtime: Write-before-act. Explicit states (PASS/DENY/BLOCKED/IN_DOUBT/RECONCILE_PENDING). Fail-closed.
+- Proof: BLAKE3 + Ed25519 + replayable ProofBundles. Offline verifiable.
 
-## What this bundle is
-
-This bundle includes:
-- public product and doctrine docs
-- the updated compiler contract
-- the public schema surfaces
-- proof bundles and example artifacts
-- the public offline verifier package
-- supporting reference docs
-
-## What this bundle is not
-
-This bundle does **not** include:
-- the full internal runtime source tree
-- the private controlplane implementation
-- internal binaries or build-only surfaces
-- the full internal SDK and orchestration code
-
-## Current release posture
-
-- `CANDIDATE_READY`
-- `BLOCKED_PENDING_PROOFCORE` for canonical proof surfaces
-- runtime proof posture currently `PASS`
-
-## Quick path
-
-Read these first:
-1. `docs/SYSTEM_BREAKDOWN.md`
-2. `docs/POLICY_COMPILER_SPEC.md`
-3. `docs/PROOF_OF_LIFE_PACKET.md`
-4. `DEMO.md`
-
-## Public verification path
-
-```bash
-cd tools/fp_verify
-python -m pip install -e .
-fp-verify ../specs/facts_plane/examples/happy_path_payment_release/bundle.json
-```
-
-## Contact
-
-- Name: `.INK`
-- Email: `romeo.singer@aol.com`
-- Contact: `romeo.singer@aol.com`
+**Live ProofCore Status**
+```json
+{
+  "proofcore_required": true,
+  "proofcore_available": true,
+  "proofcore_executed": true,
+  "status": "PASS"
+}
