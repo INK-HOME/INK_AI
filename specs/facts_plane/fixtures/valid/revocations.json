@@ -1,0 +1,22 @@
+{
+  "published_at": "2026-02-13T06:03:02+00:00",
+  "revocation_epoch": 7,
+  "revocation_set_digest": "blake3:2eeb6f2359ad48490c298676c58768099b143168a0ea37e1674a965e8281926a",
+  "revocations_version": "1.0",
+  "revoked_kids": [
+    "mai-root-000"
+  ],
+  "signature": {
+    "alg": "EdDSA",
+    "canonicalization": {
+      "hash_alg": "BLAKE3-256",
+      "hash_format": "blake3:<64hex>",
+      "jcs_rfc8785": true,
+      "jws_compact_detached": true,
+      "signing_alg": "EdDSA",
+      "signing_curve": "Ed25519"
+    },
+    "jws_detached": "DEWCbkLQAfahKBWDy3SXlLbc..gaDA2XeK99hV-JhdtP340m3HtNDu5-cBfEjGIKdqQX8Bodgi_0pbU_Th8MYHYfn4i885W_rEhjDhJx02KoqPJA",
+    "kid": "mai-registry-001"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "approvals": [
+    {
+      "approval_jws": "Tm-3tCDVCS4h4RM3qh_gZOS6..IEg2Ldm8tmR1yCOYXwQ7z6UdK5Aau2l-ylMj0PpM5msC8T0XDwdd24vD-gwZcf01ScOGBZR46HQh-Av4wXnXLQ",
+      "approver": "risk_officer"
+    }
+  ],
+  "change_type": "POLICY_EPOCH_BUMP",
+  "config_change_event_version": "1.0",
+  "event_id": "cfgchg_0001",
+  "occurred_at": "2026-02-13T06:03:02+00:00",
+  "reason": "Deploy policy pack v43 with updated deny rules.",
+  "signature": {
+    "alg": "EdDSA",
+    "canonicalization": {
+      "hash_alg": "BLAKE3-256",
+      "hash_format": "blake3:<64hex>",
+      "jcs_rfc8785": true,
+      "jws_compact_detached": true,
+      "signing_alg": "EdDSA",
+      "signing_curve": "Ed25519"
+    },
+    "jws_detached": "uBFysacOaKW-PdrUch5OFh62..RmToFKJG8yf9_11w9-RDTolmVqxGa45twHdv291zPRdITP5AFgOjlcWeJL7is6ZLwoc1FnqCr_MeDCyZqVLJew",
+    "kid": "mai-registry-001"
+  }
+}

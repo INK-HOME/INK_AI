@@ -1,0 +1,37 @@
+{
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/governance/revocations.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "issued_at": {
+      "$ref": "defs.common.schema.json#/$defs/iso_datetime"
+    },
+    "revocation_epoch": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "revocation_version": {
+      "const": "1.0",
+      "type": "string"
+    },
+    "revocations_digest": {
+      "$ref": "defs.common.schema.json#/$defs/b3_digest"
+    },
+    "revoked_kids": {
+      "items": {
+        "$ref": "defs.common.schema.json#/$defs/kid"
+      },
+      "maxItems": 100000,
+      "type": "array"
+    }
+  },
+  "required": [
+    "revocation_version",
+    "revocation_epoch",
+    "issued_at",
+    "revocations_digest",
+    "revoked_kids"
+  ],
+  "title": "Revocations Registry v1",
+  "type": "object"
+}

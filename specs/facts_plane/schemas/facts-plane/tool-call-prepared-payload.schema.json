@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/tool-call-prepared-payload.schema.json",
+  "title": "ToolCallPreparedPayload",
+  "type": "object",
+  "required": [
+    "tool_name",
+    "args_digest",
+    "action_digest",
+    "policy_epoch",
+    "requires_human_review"
+  ],
+  "properties": {
+    "tool_name": { "type": "string", "minLength": 1 },
+    "args_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "expected_side_effects_digest": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    },
+    "action_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "policy_epoch": { "type": "string", "minLength": 1 },
+    "requires_human_review": { "type": "boolean" },
+    "idempotency_key": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

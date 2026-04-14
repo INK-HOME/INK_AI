@@ -1,0 +1,74 @@
+{
+  "schema_version": "agi.replay_proof.v7",
+  "proof_id": "rpf_example_v6",
+  "proof_basis": {
+    "verifier_version": "agi-verifier.v7.2",
+    "transition_table_version": "agi-transitions.v6",
+    "schema_pack_version": "agi-schemas.v7",
+    "canonicalization_contract": "RFC8785-JCS",
+    "constitution_digest": "blake3:constitution",
+    "policy_pack_digest": "blake3:policy"
+  },
+  "bound_artifacts": {
+    "intent_envelope": {
+      "artifact_id": "iev_example_v6",
+      "digest": "sha3_256:cae3b60ca6862e3694c019d79f1bc5f2656c45a7fc4784d6b2b2dfdfee07817d",
+      "signature_valid": true
+    },
+    "authority_decision": {
+      "artifact_id": "adv_example_v6",
+      "digest": "sha3_256:6f0ff6484952e5e4c1237a27f847dfbda478fed0b2b0ca144f0a2d07eb3f29c9",
+      "signature_valid": true
+    },
+    "integrity_certification": {
+      "artifact_id": "inc_example_v6",
+      "digest": "sha3_256:d9b37a5c382962cf23ed9e88903f162532627ca4ef2a2aed2eb6ae7ce5182f06",
+      "signature_valid": true
+    },
+    "result_receipt": {
+      "artifact_id": "rrc_example_v6",
+      "digest": "sha3_256:799f3a1ebc9d572d6ced1d8d653a66f3e41a99bea0db71e1853949ef7de967f3",
+      "signature_valid": true
+    }
+  },
+  "artifact_completeness": {
+    "required_artifacts_present": true,
+    "required_leaves_present": true
+  },
+  "transition_verification": {
+    "path": [
+      "PROPOSED",
+      "UNDER_AUTHORITY_REVIEW",
+      "AUTHORIZED",
+      "CERTIFICATION_PENDING",
+      "CERTIFIED",
+      "EXECUTION_READY",
+      "EXECUTING",
+      "RESULT_OBSERVED",
+      "TERMINAL_SUCCESS"
+    ]
+  },
+  "semantic_conformance": {
+    "scope_chain_consistent": true
+  },
+  "contradiction_checks": {
+    "contradictions_found": false,
+    "contradiction_codes": []
+  },
+  "proof_result": {
+    "outcome": "PASS",
+    "reason_codes": [
+      "REPLAY_PASS"
+    ]
+  },
+  "seal": {
+    "artifact_class": "replay_proof",
+    "payload_digest": "compat-sha3_256:167709ffd210e79671a56c4ed3baf5739c93150798748d418988947ad9044631",
+    "signature_alg": "Ed25519",
+    "signed_by": "replay_key",
+    "key_id": "replay_key",
+    "signature": "XTFz6NVNXc7Plkl8pGIoDVni+RTUs1g4zdUM7wzKRjYw1eIRndFmp5pBacaS9epcmppADzDBS2j0bIFj4VTGAA==",
+    "canonical_backend": "fixture-build",
+    "signature_source": "fixture-generated"
+  }
+}

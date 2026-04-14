@@ -1,0 +1,552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agi.result_receipt.v7.schema.json",
+  "title": "AGI ResultReceipt v7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "binds_envelope",
+    "binds_decision",
+    "binds_certification",
+    "execution_identity",
+    "execution_observation",
+    "readback_verification",
+    "side_effect_assessment",
+    "execution_resolution",
+    "readback_policy",
+    "terminal_verdict",
+    "seal"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "agi.result_receipt.v7"
+    },
+    "receipt_id": {
+      "type": "string"
+    },
+    "binds_envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelope_id",
+        "envelope_digest"
+      ],
+      "properties": {
+        "envelope_id": {
+          "type": "string"
+        },
+        "envelope_digest": {
+          "type": "string"
+        }
+      }
+    },
+    "binds_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "decision_digest"
+      ],
+      "properties": {
+        "decision_id": {
+          "type": "string"
+        },
+        "decision_digest": {
+          "type": "string"
+        }
+      }
+    },
+    "binds_certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "certification_id",
+        "certification_digest"
+      ],
+      "properties": {
+        "certification_id": {
+          "type": "string"
+        },
+        "certification_digest": {
+          "type": "string"
+        }
+      }
+    },
+    "execution_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution_corridor_id",
+        "idempotency_key",
+        "tool_class",
+        "tool_name",
+        "tool_method"
+      ],
+      "properties": {
+        "execution_corridor_id": {
+          "type": "string"
+        },
+        "idempotency_key": {
+          "type": "string"
+        },
+        "tool_class": {
+          "enum": [
+            "TRANSACTIONAL",
+            "BEST_EFFORT",
+            "HYBRID"
+          ]
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "tool_method": {
+          "type": "string"
+        },
+        "attempt_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "execution_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requested_args_digest",
+        "executed_args_digest",
+        "intended_effect_digest",
+        "execution_status",
+        "realized_effect_class"
+      ],
+      "properties": {
+        "requested_args_digest": {
+          "type": "string"
+        },
+        "executed_args_digest": {
+          "type": "string"
+        },
+        "intended_effect_digest": {
+          "type": "string"
+        },
+        "observed_effect_digest": {
+          "type": "string"
+        },
+        "execution_status": {
+          "enum": [
+            "SUCCEEDED",
+            "FAILED",
+            "ABORTED",
+            "TIMED_OUT",
+            "COMPENSATED",
+            "NOOP_IDEMPOTENT"
+          ]
+        },
+        "realized_effect_class": {
+          "enum": [
+            "INTENDED_EFFECT_REALIZED",
+            "NO_EFFECT_OBSERVED",
+            "PARTIAL_EFFECT_OBSERVED",
+            "UNINTENDED_EFFECT_OBSERVED",
+            "EFFECT_UNKNOWN_BOUNDED",
+            "COMPENSATED_EFFECT_STATE"
+          ]
+        }
+      }
+    },
+    "readback_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readback_required",
+        "readback_completed",
+        "intended_effect_confirmed",
+        "material_divergence_detected",
+        "bounded_uncertainty"
+      ],
+      "properties": {
+        "readback_required": {
+          "type": "boolean"
+        },
+        "readback_completed": {
+          "type": "boolean"
+        },
+        "readback_sources": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "intended_effect_confirmed": {
+          "type": "boolean"
+        },
+        "material_divergence_detected": {
+          "type": "boolean"
+        },
+        "divergence_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bounded_uncertainty": {
+          "type": "boolean"
+        },
+        "uncertainty_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "side_effect_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "forbidden_side_effects_detected",
+        "undeclared_side_effects_detected"
+      ],
+      "properties": {
+        "observed_side_effects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_side_effects_detected": {
+          "type": "boolean"
+        },
+        "forbidden_side_effect_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "undeclared_side_effects_detected": {
+          "type": "boolean"
+        },
+        "undeclared_side_effect_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "execution_resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolution_mode",
+        "entered_indoubt",
+        "reconciliation_attempt_count"
+      ],
+      "properties": {
+        "resolution_mode": {
+          "enum": [
+            "DIRECT",
+            "RECONCILED",
+            "COMPENSATED",
+            "UNKNOWN_BOUNDED"
+          ]
+        },
+        "entered_indoubt": {
+          "type": "boolean"
+        },
+        "indoubt_reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reconciliation_attempt_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reconciliation_sources": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "readback_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readback_mode"
+      ],
+      "properties": {
+        "readback_mode": {
+          "enum": [
+            "SELF",
+            "INDEPENDENT",
+            "QUORUM"
+          ]
+        },
+        "readback_quorum_size": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "readback_quorum_met": {
+          "type": "boolean"
+        },
+        "quorum_consensus_result": {
+          "enum": [
+            "CONFIRMED",
+            "DIVERGENT",
+            "NO_CONSENSUS"
+          ]
+        }
+      }
+    },
+    "terminal_verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "reason_codes"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "SUCCESS",
+            "FAILURE",
+            "UNKNOWN_BOUNDED",
+            "COMPENSATED",
+            "NOOP_IDEMPOTENT"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "payload_digest",
+        "signature_alg",
+        "signed_by",
+        "signature"
+      ],
+      "properties": {
+        "payload_digest": {
+          "type": "string"
+        },
+        "signature_alg": {
+          "const": "Ed25519"
+        },
+        "signed_by": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        }
+      }
+    },
+    "binds_reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reconcile_receipt_id",
+        "reconcile_receipt_digest"
+      ],
+      "properties": {
+        "reconcile_receipt_id": {
+          "type": "string"
+        },
+        "reconcile_receipt_digest": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "execution_identity": {
+            "properties": {
+              "tool_class": {
+                "const": "TRANSACTIONAL"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "readback_policy": {
+            "properties": {
+              "readback_mode": {
+                "enum": [
+                  "INDEPENDENT",
+                  "QUORUM"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_resolution": {
+            "properties": {
+              "entered_indoubt": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution_resolution": {
+            "required": [
+              "indoubt_reason_codes",
+              "reconciliation_sources"
+            ],
+            "properties": {
+              "resolution_mode": {
+                "enum": [
+                  "RECONCILED",
+                  "COMPENSATED",
+                  "UNKNOWN_BOUNDED"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "readback_policy": {
+            "properties": {
+              "readback_mode": {
+                "const": "QUORUM"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "readback_policy": {
+            "required": [
+              "readback_quorum_size",
+              "readback_quorum_met",
+              "quorum_consensus_result"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_observation": {
+            "properties": {
+              "realized_effect_class": {
+                "const": "INTENDED_EFFECT_REALIZED"
+              }
+            }
+          },
+          "execution_identity": {
+            "properties": {
+              "tool_class": {
+                "const": "TRANSACTIONAL"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "readback_verification": {
+            "properties": {
+              "readback_completed": {
+                "const": true
+              },
+              "intended_effect_confirmed": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "terminal_verdict": {
+            "properties": {
+              "outcome": {
+                "const": "SUCCESS"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution_observation": {
+            "properties": {
+              "realized_effect_class": {
+                "const": "INTENDED_EFFECT_REALIZED"
+              }
+            }
+          },
+          "readback_verification": {
+            "properties": {
+              "material_divergence_detected": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_resolution": {
+            "properties": {
+              "entered_indoubt": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "binds_reconciliation"
+        ],
+        "properties": {
+          "execution_resolution": {
+            "properties": {
+              "resolution_mode": {
+                "not": {
+                  "const": "DIRECT"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

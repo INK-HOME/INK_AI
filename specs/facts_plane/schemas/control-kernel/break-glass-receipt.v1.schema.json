@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/break-glass-receipt/v1",
+  "title": "BreakGlassReceipt",
+  "description": "Tamper-evident record of break-glass emergency override activation. Written to the audit chain BEFORE any override takes effect. The offline verifier flags all decisions taken within the break-glass window.",
+  "type": "object",
+  "required": [
+    "kind",
+    "intent_id",
+    "reason",
+    "invoked_by",
+    "approvers",
+    "expiry_utc",
+    "timestamp",
+    "audit_chain_seq",
+    "prev_digest",
+    "audit_digest"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "const": "BREAK_GLASS"
+    },
+    "intent_id": {
+      "type": "string",
+      "pattern": "^bg-[a-f0-9]+$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "invoked_by": {
+      "type": "string"
+    },
+    "approvers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "STRICT mode requires \u22652 approvers"
+    },
+    "expiry_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_minutes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "actions_taken": {
+      "type": "array"
+    },
+    "policy_epoch": {
+      "type": "integer"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "audit_chain_seq": {
+      "type": "integer"
+    },
+    "prev_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "audit_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

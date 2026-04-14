@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agi.replay_proof.v7.schema.json",
+  "title": "AGI ReplayProof v7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "proof_id",
+    "proof_basis",
+    "bound_artifacts",
+    "artifact_completeness",
+    "transition_verification",
+    "semantic_conformance",
+    "contradiction_checks",
+    "proof_result",
+    "seal"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "agi.replay_proof.v7"
+    },
+    "proof_id": {
+      "type": "string"
+    },
+    "proof_basis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verifier_version",
+        "transition_table_version",
+        "schema_pack_version",
+        "canonicalization_contract",
+        "constitution_digest",
+        "policy_pack_digest"
+      ],
+      "properties": {
+        "verifier_version": {
+          "type": "string"
+        },
+        "transition_table_version": {
+          "type": "string"
+        },
+        "schema_pack_version": {
+          "type": "string"
+        },
+        "canonicalization_contract": {
+          "const": "RFC8785-JCS"
+        },
+        "constitution_digest": {
+          "type": "string"
+        },
+        "policy_pack_digest": {
+          "type": "string"
+        }
+      }
+    },
+    "bound_artifacts": {
+      "type": "object",
+      "properties": {
+        "reconcile_receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifact_id",
+            "digest",
+            "signature_valid"
+          ],
+          "properties": {
+            "artifact_id": {
+              "type": "string"
+            },
+            "digest": {
+              "type": "string"
+            },
+            "signature_valid": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "artifact_completeness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_artifacts_present",
+        "required_leaves_present"
+      ],
+      "properties": {
+        "required_artifacts_present": {
+          "type": "boolean"
+        },
+        "missing_artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_leaves_present": {
+          "type": "boolean"
+        },
+        "missing_leaves": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "transition_verification": {
+      "type": "object"
+    },
+    "semantic_conformance": {
+      "type": "object"
+    },
+    "contradiction_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contradictions_found",
+        "contradiction_codes"
+      ],
+      "properties": {
+        "contradictions_found": {
+          "type": "boolean"
+        },
+        "contradiction_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "proof_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "reason_codes"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INCOMPLETE",
+            "CONTRADICTED"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "payload_digest",
+        "signature_alg",
+        "signed_by",
+        "signature"
+      ],
+      "properties": {
+        "payload_digest": {
+          "type": "string"
+        },
+        "signature_alg": {
+          "const": "Ed25519"
+        },
+        "signed_by": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "bundle_id": "bndl_breakglass_001",
+  "trace_id": "trace_breakglass_001",
+  "tenant_id": "tenant_demo",
+  "verification_report": {
+    "status": "UNVERIFIED_PENDING_RUN",
+    "generated_by": "fp-export-node"
+  },
+  "control_envelopes": [
+    {
+      "trace_id": "trace_breakglass_001",
+      "tenant_id": "tenant_demo",
+      "risk_tier": "critical",
+      "tool_name": "payments.transfer",
+      "args_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+      "expected_side_effects_digest": "blake3-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "policy_epoch": "2026-03-01",
+      "review_required": true,
+      "adapter_id": "payments-v2",
+      "mtls_fingerprint": "sha256:deadbeef",
+      "evidence_refs": [],
+      "break_glass": true,
+      "break_glass_reason_code": "urgent_override",
+      "break_glass_justification": "Need emergency override now",
+      "incident_id": null
+    }
+  ],
+  "evidence_refs": [],
+  "review_records": [],
+  "approval_records": [],
+  "reviewer_metrics": [],
+  "token_records": [],
+  "state_transitions": [],
+  "receipts": []
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": "agi.integrity_certification.v7",
+  "certification_id": "inc_example_v6",
+  "binds_envelope": {
+    "envelope_id": "iev_example_v6",
+    "envelope_digest": "sha3_256:cae3b60ca6862e3694c019d79f1bc5f2656c45a7fc4784d6b2b2dfdfee07817d"
+  },
+  "binds_decision": {
+    "decision_id": "adv_example_v6",
+    "decision_digest": "sha3_256:6f0ff6484952e5e4c1237a27f847dfbda478fed0b2b0ca144f0a2d07eb3f29c9"
+  },
+  "candidate_path": {
+    "candidate_args_digest": "blake3:args123",
+    "candidate_effect_digest": "blake3:effect123"
+  },
+  "current_state_revalidation": {
+    "current_layer1_snapshot_id": "l1s_1",
+    "current_layer1_snapshot_digest": "blake3:snap1",
+    "revalidation_sources": [
+      {
+        "source": "calendar_readback",
+        "digest": "blake3:rb1"
+      }
+    ],
+    "material_delta_from_authority_basis": false,
+    "material_delta_codes": []
+  },
+  "conformance_check": {
+    "args_digest_matches": true,
+    "effect_digest_matches": true,
+    "resource_scope_matches": true,
+    "protected_surface_scope_matches": true,
+    "forbidden_side_effects_detected": false,
+    "undeclared_surface_contacts": [],
+    "token_valid": true,
+    "token_expired": false,
+    "token_replayed": false
+  },
+  "drift_analysis": {
+    "draft_to_intent_drift": false,
+    "draft_to_decision_drift": false,
+    "behavioral_pattern_risk": "LOW",
+    "pattern_window_refs": [],
+    "integrity_plane_alerts": []
+  },
+  "commit_safety": {
+    "safe_to_commit": true,
+    "safe_to_write_layer0_receipt": true,
+    "requires_reauth": false,
+    "requires_human_review": false,
+    "reset_required": false
+  },
+  "edge_validity": {
+    "execution_guard_mode": "OCC",
+    "certified_state_version_ref": "svr1",
+    "certified_state_version_digest": "blake3:sv1",
+    "edge_revalidation_required": true,
+    "edge_revalidation_ttl_ms": 2000
+  },
+  "reconciliation_policy": {
+    "indoubt_ttl_ms": 10000,
+    "heartbeat_required": true,
+    "reconcile_mode": "AUTO",
+    "compensation_allowed": true,
+    "max_reconcile_attempts": 3
+  },
+  "verdict": {
+    "outcome": "CERTIFIED",
+    "reason_codes": [
+      "INTEGRITY_CERTIFIED"
+    ]
+  },
+  "seal": {
+    "artifact_class": "integrity_certification",
+    "payload_digest": "compat-sha3_256:d9b37a5c382962cf23ed9e88903f162532627ca4ef2a2aed2eb6ae7ce5182f06",
+    "signature_alg": "Ed25519",
+    "signed_by": "integrity_key",
+    "key_id": "integrity_key",
+    "signature": "3uqfdNyIxL2TGST/Su7f7Xaznd1NCDSQoh2Pws1KOlt71Bx3RBnfOyAihPDD9bI/NFgByd5ElvmtjsWYRrIuAw==",
+    "canonical_backend": "fixture-build",
+    "signature_source": "fixture-generated"
+  }
+}

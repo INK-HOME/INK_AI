@@ -1,0 +1,91 @@
+{
+  "schema_version": "agi.result_receipt.v7",
+  "receipt_id": "rrc_reconciled_v7",
+  "binds_envelope": {
+    "envelope_id": "iev_example_v6",
+    "envelope_digest": "sha3_256:cae3b60ca6862e3694c019d79f1bc5f2656c45a7fc4784d6b2b2dfdfee07817d"
+  },
+  "binds_decision": {
+    "decision_id": "adv_example_v6",
+    "decision_digest": "sha3_256:6f0ff6484952e5e4c1237a27f847dfbda478fed0b2b0ca144f0a2d07eb3f29c9"
+  },
+  "binds_certification": {
+    "certification_id": "inc_example_v6",
+    "certification_digest": "sha3_256:d9b37a5c382962cf23ed9e88903f162532627ca4ef2a2aed2eb6ae7ce5182f06"
+  },
+  "execution_identity": {
+    "execution_corridor_id": "xec1",
+    "idempotency_key": "idem1",
+    "tool_class": "TRANSACTIONAL",
+    "tool_name": "calendar.create_event",
+    "tool_method": "create_event",
+    "attempt_count": 1
+  },
+  "execution_observation": {
+    "requested_args_digest": "blake3:args123",
+    "executed_args_digest": "blake3:args123",
+    "intended_effect_digest": "blake3:effect123",
+    "observed_effect_digest": "blake3:effect123",
+    "execution_status": "SUCCEEDED",
+    "realized_effect_class": "INTENDED_EFFECT_REALIZED"
+  },
+  "readback_verification": {
+    "readback_required": true,
+    "readback_completed": true,
+    "readback_sources": [
+      {
+        "source": "independent_adapter",
+        "digest": "blake3:rb1"
+      }
+    ],
+    "intended_effect_confirmed": true,
+    "material_divergence_detected": false,
+    "divergence_codes": [],
+    "bounded_uncertainty": false,
+    "uncertainty_codes": []
+  },
+  "side_effect_assessment": {
+    "observed_side_effects": [],
+    "forbidden_side_effects_detected": false,
+    "forbidden_side_effect_codes": [],
+    "undeclared_side_effects_detected": false,
+    "undeclared_side_effect_codes": []
+  },
+  "execution_resolution": {
+    "resolution_mode": "RECONCILED",
+    "entered_indoubt": true,
+    "indoubt_reason_codes": [
+      "ENTERED_IN_DOUBT"
+    ],
+    "reconciliation_attempt_count": 1,
+    "reconciliation_sources": [
+      {
+        "source": "membrane.reconciler",
+        "digest": "blake3:reconcile1"
+      }
+    ]
+  },
+  "readback_policy": {
+    "readback_mode": "INDEPENDENT"
+  },
+  "terminal_verdict": {
+    "outcome": "SUCCESS",
+    "reason_codes": [
+      "INTENDED_EFFECT_REALIZED"
+    ]
+  },
+  "seal": {
+    "artifact_class": "result_receipt",
+    "payload_digest": "compat-sha3_256:b937748ab55160f4a835a057f9100a07abafdf37f08bc7286340b112c4241b71",
+    "signature_alg": "Ed25519",
+    "signed_by": "result_key",
+    "key_id": "result_key",
+    "signature": "vIVQQrENXqjS5yTtvyG98RmZzEqkCIEdcZJEeAMdiAe+oblQUu84LlxfVq9v8UT5EL15t/bFHJLJphzZyguGBg==",
+    "canonical_backend": "fixture-build",
+    "signature_source": "fixture-generated"
+  },
+  "binds_reconciliation": {
+    "reconcile_receipt_id": "rec_example_v7",
+    "reconcile_receipt_digest": "sha3_256:4de7c08e4cc921931a70dfbb6e7e87e424356c3663bbf472e20eda0f8af1eae5"
+  }
+}

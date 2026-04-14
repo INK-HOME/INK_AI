@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/wal-record.schema.json",
+  "title": "WalRecord",
+  "type": "object",
+  "required": [
+    "wal_version",
+    "record_type",
+    "trace_id",
+    "seq",
+    "prev_digest",
+    "event",
+    "self_digest"
+  ],
+  "properties": {
+    "wal_version": { "type": "string", "minLength": 1 },
+    "record_type": { "type": "string", "enum": ["event"] },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "seq": { "type": "integer", "minimum": 1 },
+    "prev_digest": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    },
+    "event": { "$ref": "event-envelope.schema.json" },
+    "self_digest": { "$ref": "common.schema.json#/$defs/DigestString" }
+  },
+  "additionalProperties": false
+}

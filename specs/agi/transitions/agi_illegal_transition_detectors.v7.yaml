@@ -1,0 +1,49 @@
+- detector_id: X001
+  illegal_transition: PROPOSED -> EXECUTING
+  consequence:
+    corridor.force_close: true
+    incident.flag: ILLEGAL_SHORTCUT
+    replay_proof_outcome_if_attempted: FAIL
+- detector_id: X002
+  illegal_transition: DENIED -> EXECUTING
+  consequence:
+    incident.flag: POST_DENY_EXECUTION
+    corridor.force_close: true
+    replay_proof_outcome_if_attempted: CONTRADICTED
+- detector_id: X003
+  illegal_transition: TREASON_FLAGGED -> AUTHORIZED
+  consequence:
+    incident.flag: POST_TREASON_REAUTH
+    corridor.force_close: true
+    replay_proof_outcome_if_attempted: CONTRADICTED
+- detector_id: X004
+  illegal_transition: AUTHORIZED -> EXECUTING without certification
+  consequence:
+    incident.flag: EXECUTION_WITHOUT_INTEGRITY
+    corridor.force_close: true
+    replay_proof_outcome_if_attempted: FAIL
+- detector_id: X005
+  illegal_transition: any_executional_corridor -> Layer0FinalCommit without ResultReceipt
+  consequence:
+    incident.flag: FACT_COMMIT_WITHOUT_OBSERVED_RESULT
+    replay_proof_outcome_if_attempted: FAIL
+- detector_id: X006
+  illegal_transition: REAUTH_REQUIRED -> EXECUTING
+  consequence:
+    incident.flag: STALE_AUTHORITY_REUSE
+    corridor.force_close: true
+    replay_proof_outcome_if_attempted: FAIL
+- detector_id: X007
+  illegal_transition: IN_DOUBT -> TERMINAL_SUCCESS without reconciled receipt or direct
+    sufficient evidence class
+  consequence:
+    incident.flag: FALSE_CLEAN_SUCCESS_AFTER_UNCERTAINTY
+    corridor.force_close: true
+    replay_proof_outcome_if_attempted: CONTRADICTED
+- detector_id: X008
+  illegal_transition: EXECUTION_READY -> EXECUTING with stale OCC version or invalid
+    lease or invalid tx context
+  consequence:
+    incident.flag: STALE_EDGE_EXECUTION
+    corridor.force_close: true
+    replay_proof_outcome_if_attempted: FAIL

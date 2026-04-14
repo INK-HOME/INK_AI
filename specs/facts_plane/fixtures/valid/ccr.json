@@ -1,0 +1,57 @@
+{
+  "ccr_version": "1.0",
+  "coverage": {
+    "features": [
+      "NFKC",
+      "RFC8785"
+    ],
+    "languages": [
+      "en",
+      "ja"
+    ]
+  },
+  "fail_count": 0,
+  "fixture_count_total": 3,
+  "generated_at": "2026-02-13T06:03:02+00:00",
+  "output_digest_map": {
+    "base_01_simple": "blake3:16cb3c3723c8dfac1acc1418d8de783c6cae737d456170d103de30c3b457ca73",
+    "i18n_01_ja": "blake3:8441d0ec2d64f9ce6d2e9ffed7939b96650b2c6f41ec7c2f7e8005c536ece656",
+    "norm_03_ligature": "blake3:c04d18ca47e0244330e66b349e4c30ebcdddadb67527251c24c8fea94566def6"
+  },
+  "pass_count": 3,
+  "results": [
+    {
+      "description": "Ordering",
+      "digest": "blake3:9e335b6b93b4b1e68bf39fde0410ce6dbbb71a69e9ab46b2a9b6445becdce6b0",
+      "fixture_id": "base_01_simple",
+      "status": "PASS"
+    },
+    {
+      "description": "Japanese",
+      "digest": "blake3:eb6176d3498d9b791fae6ebb2aa4083f000fc00258893360ce46f5da53d6cd06",
+      "fixture_id": "i18n_01_ja",
+      "status": "PASS"
+    },
+    {
+      "description": "Ligature",
+      "digest": "blake3:1b2dcc5e25bdd53a1693dfe86c24c695907f0587384176bd3cc02d6374a52fa2",
+      "fixture_id": "norm_03_ligature",
+      "status": "PASS"
+    }
+  ],
+  "schema_pack_digest": "blake3:d0292703c96289666ba1324e1d3c3053767fbc527582797995b230ff8e48603e",
+  "signature": {
+    "alg": "EdDSA",
+    "canonicalization": {
+      "hash_alg": "BLAKE3-256",
+      "hash_format": "blake3:<64hex>",
+      "jcs_rfc8785": true,
+      "jws_compact_detached": true,
+      "signing_alg": "EdDSA",
+      "signing_curve": "Ed25519"
+    },
+    "jws_detached": "zQ3GQo73X_Q10nH-NdwaH1gn..VvpQRiFfvDyNo-FK5mC2hFkvP-CuZEDOAdgZ1nSU_MhndhCpCnZvBoAE5hHwlF74APequHZMn89x-PvOyq35CQ",
+    "kid": "mai-ci-001"
+  },
+  "suite_version": "v1.2.0"
+}

@@ -1,0 +1,326 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agi.intent_envelope.v7.schema.json",
+  "title": "AGI IntentEnvelope v7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "envelope_id",
+    "authority_clock",
+    "intent",
+    "state_bindings",
+    "protected_surface_analysis",
+    "constraints",
+    "uncertainty",
+    "lineage",
+    "seal"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "agi.intent_envelope.v7"
+    },
+    "envelope_id": {
+      "type": "string"
+    },
+    "authority_clock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "epoch",
+        "sequence",
+        "issued_at"
+      ],
+      "properties": {
+        "epoch": {
+          "type": "integer"
+        },
+        "sequence": {
+          "type": "integer"
+        },
+        "issued_at": {
+          "type": "string"
+        }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intent_type",
+        "intent_class",
+        "requested_action",
+        "action_semantics",
+        "target_scope",
+        "goal_statement"
+      ],
+      "properties": {
+        "intent_type": {
+          "type": "string"
+        },
+        "intent_class": {
+          "type": "string"
+        },
+        "requested_action": {
+          "type": "string"
+        },
+        "action_semantics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tool_name",
+            "tool_method",
+            "args_digest",
+            "intended_effect_digest"
+          ],
+          "properties": {
+            "tool_name": {
+              "type": "string"
+            },
+            "tool_method": {
+              "type": "string"
+            },
+            "args_digest": {
+              "type": "string"
+            },
+            "intended_effect_digest": {
+              "type": "string"
+            }
+          }
+        },
+        "target_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "primary_targets",
+            "declared_layer_contacts"
+          ],
+          "properties": {
+            "primary_targets": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object"
+              }
+            },
+            "declared_layer_contacts": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "goal_statement": {
+          "type": "string"
+        }
+      }
+    },
+    "state_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reasoning_time_snapshot",
+        "declared_facts",
+        "assumptions",
+        "unknowns"
+      ],
+      "properties": {
+        "reasoning_time_snapshot": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "layer1_snapshot_id",
+            "layer1_snapshot_digest",
+            "captured_at",
+            "freshness_ttl_ms"
+          ],
+          "properties": {
+            "layer1_snapshot_id": {
+              "type": "string"
+            },
+            "layer1_snapshot_digest": {
+              "type": "string"
+            },
+            "captured_at": {
+              "type": "string"
+            },
+            "freshness_ttl_ms": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "declared_facts": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "protected_surface_analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "touches_layer0",
+        "touches_layer1",
+        "touches_execution_authority",
+        "treason_risk_flags"
+      ],
+      "properties": {
+        "touches_layer0": {
+          "type": "boolean"
+        },
+        "touches_layer1": {
+          "type": "boolean"
+        },
+        "touches_execution_authority": {
+          "type": "boolean"
+        },
+        "treason_risk_flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "must_fail_closed",
+        "must_revalidate_layer1_before_execution",
+        "must_match_args_digest_exactly",
+        "must_match_intended_effect_digest_exactly",
+        "max_token_validity_ms",
+        "execution_scope_lock"
+      ],
+      "properties": {
+        "must_fail_closed": {
+          "type": "boolean"
+        },
+        "must_revalidate_layer1_before_execution": {
+          "type": "boolean"
+        },
+        "must_match_args_digest_exactly": {
+          "type": "boolean"
+        },
+        "must_match_intended_effect_digest_exactly": {
+          "type": "boolean"
+        },
+        "max_token_validity_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "execution_scope_lock": {
+          "type": "boolean"
+        }
+      }
+    },
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "has_material_uncertainty",
+        "uncertainty_reasons",
+        "missing_inputs",
+        "contention_refs"
+      ],
+      "properties": {
+        "has_material_uncertainty": {
+          "type": "boolean"
+        },
+        "uncertainty_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "missing_inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contention_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parent_envelope_id",
+        "supersedes_envelope_id",
+        "retry_of_envelope_id"
+      ],
+      "properties": {
+        "parent_envelope_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "supersedes_envelope_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retry_of_envelope_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization",
+        "payload_digest",
+        "signature_alg",
+        "signed_by",
+        "signature"
+      ],
+      "properties": {
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "payload_digest": {
+          "type": "string"
+        },
+        "signature_alg": {
+          "const": "Ed25519"
+        },
+        "signed_by": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

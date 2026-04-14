@@ -1,0 +1,22 @@
+bundle_id: direct_after_indoubt_contradicted_v7
+expected_outcome: CONTRADICTED
+declared_path:
+- PROPOSED
+- UNDER_AUTHORITY_REVIEW
+- AUTHORIZED
+- CERTIFICATION_PENDING
+- CERTIFIED
+- EXECUTION_READY
+- EXECUTING
+- IN_DOUBT
+- RESULT_OBSERVED
+- TERMINAL_SUCCESS
+artifacts:
+- schema: agi.intent_envelope.v7.schema.json
+  file: ../artifacts/intent_envelope_minimal.v7.json
+- schema: agi.authority_decision.v7.schema.json
+  file: ../artifacts/authority_decision_allow_occ_minimal.v7.json
+- schema: agi.integrity_certification.v7.schema.json
+  file: ../artifacts/integrity_certification_certified_occ_minimal.v7.json
+- schema: agi.result_receipt.v7.schema.json
+  file: ../artifacts/result_receipt_bad_direct_after_indoubt.v7.json

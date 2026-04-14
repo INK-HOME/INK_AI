@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/decision-receipt-aplus/v1",
+  "title": "DecisionReceipt APLUS v1",
+  "description": "The full APLUS decision receipt: ties together policy digest, hard boundary digest, boundary validation digest, audit chain tip, Merkle checkpoint, and evidence bundle manifest into a single signed artifact. Every field after receipt_version through evidence_bundle_manifest_digest is required in STRICT — a missing digest means the auditor cannot verify that component without re-running the server. intent-receipt.v1 is the server's existing receipt; this schema is the audit-grade wrapper the verifier and compliance teams use.",
+
+  "type": "object",
+  "required": [
+    "receipt_version",
+    "decision_id",
+    "issued_at",
+    "tenant_id",
+    "profile",
+    "policy_digest",
+    "policy_epoch",
+    "hard_boundary_digest",
+    "hard_boundary_validation_digest",
+    "audit_chain_tip_digest",
+    "merkle_checkpoint_digest",
+    "evidence_bundle_manifest_digest",
+    "outcome",
+    "reason_codes"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+    "receipt_version": {
+      "type": "string",
+      "description": "Schema version of this receipt. Must match the schema_id in schema-registry.v3.json."
+    },
+
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$",
+      "description": "UUID v4 identifying this decision. Matches intent_id in the underlying IntentReceipt."
+    },
+
+    "issued_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "profile": {
+      "type": "string",
+      "enum": ["DEV", "ENTERPRISE", "STRICT"]
+    },
+
+    "policy_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of the canonical JSON of the PolicyPack active at decision time. Allows auditors to retrieve and verify the exact policy that approved/blocked."
+    },
+
+    "policy_epoch": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Policy epoch at decision time. Must be >= 1 (epoch 0 = no policy loaded = DEV only)."
+    },
+
+    "hard_boundary_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of the canonical JSON of the HardBoundarySpec active at decision time. Binds decisions to the exact network/IAM/secrets configuration in force."
+    },
+
+    "hard_boundary_validation_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of the most recent HardBoundaryValidationResult at decision time. Proves that bypass tests A–F were run and passed under the current boundary configuration."
+    },
+
+    "audit_chain_tip_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "audit_digest of the latest record in the audit chain at the moment this receipt was issued. Pins the receipt to a specific chain position — the verifier can prove this decision is in the chain."
+    },
+
+    "merkle_checkpoint_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "merkle_root of the most recent CHECKPOINT record. Provides range proof over the chain window preceding this receipt without requiring the full chain."
+    },
+
+    "evidence_bundle_manifest_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of the EvidenceBundleManifest for this decision. The manifest lists all leaf artifacts (network logs, IAM events, audit chain slice) with their own digests."
+    },
+
+    "outcome": {
+      "type": "string",
+      "enum": ["ALLOW", "DENY", "PENDING_REVIEW", "ERROR"],
+      "description": "Decision outcome. Maps to: ALLOW=approved, DENY=blocked, PENDING_REVIEW=human review required."
+    },
+
+    "reason_codes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Rule IDs or codes that produced the outcome. Empty for ALLOW. For DENY: the rule_id that blocked."
+    },
+
+    "lifecycle_state": {
+      "type": "string",
+      "enum": ["APPROVED", "BLOCKED", "PENDING_REVIEW", "RECONCILE_PENDING", "DEAD"],
+      "description": "Fine-grained lifecycle position, matching intent-receipt lifecycle_state field."
+    },
+
+    "tool_class": {
+      "type": "string",
+      "enum": ["transactional", "best-effort", "irreversible"],
+      "description": "DTM side-effect class of the adapter executing this decision."
+    },
+
+    "readback_status": {
+      "type": "string",
+      "enum": ["ok", "mismatch", "skipped"],
+      "description": "Post-execution readback result. mismatch triggers autonomy clamp."
+    },
+
+    "break_glass_active": {
+      "type": "boolean",
+      "description": "True if a break-glass window was active when this receipt was issued."
+    },
+
+    "receipt_sig": {
+      "type": "string",
+      "description": "HMAC-SHA256 hex digest over the canonical JSON of the receipt body, keyed with DOTINK_SECRET_KEY."
+    }
+  },
+
+  "allOf": [
+    {
+      "description": "STRICT: receipt_sig is required.",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": { "required": ["receipt_sig", "lifecycle_state", "tool_class"] }
+    },
+    {
+      "description": "STRICT: break_glass_active must be present (not absent — false is fine).",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": { "required": ["break_glass_active"] }
+    }
+  ]
+}

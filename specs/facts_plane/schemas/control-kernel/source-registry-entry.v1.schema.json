@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "source-registry-entry.v1.schema.json",
+  "title": "SourceRegistryEntry",
+  "type": "object",
+  "required": [
+    "source_id",
+    "source_owner",
+    "source_class",
+    "mutability",
+    "validation_method",
+    "snapshot_required",
+    "corroboration_required",
+    "enabled"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "source_owner": {
+      "type": "string"
+    },
+    "source_class": {
+      "type": "string",
+      "enum": [
+        "primary_verified",
+        "primary_unverified",
+        "external_mutable",
+        "derived",
+        "human_assertion"
+      ]
+    },
+    "mutability": {
+      "type": "string",
+      "enum": [
+        "immutable",
+        "versioned",
+        "mutable"
+      ]
+    },
+    "validation_method": {
+      "type": "string"
+    },
+    "snapshot_required": {
+      "type": "boolean"
+    },
+    "corroboration_required": {
+      "type": "boolean"
+    },
+    "enabled": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

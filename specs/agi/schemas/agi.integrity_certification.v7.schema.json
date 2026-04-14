@@ -1,0 +1,487 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agi.integrity_certification.v7.schema.json",
+  "title": "AGI IntegrityCertification v7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "certification_id",
+    "binds_envelope",
+    "binds_decision",
+    "candidate_path",
+    "current_state_revalidation",
+    "conformance_check",
+    "drift_analysis",
+    "commit_safety",
+    "edge_validity",
+    "reconciliation_policy",
+    "verdict",
+    "seal"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "agi.integrity_certification.v7"
+    },
+    "certification_id": {
+      "type": "string"
+    },
+    "binds_envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelope_id",
+        "envelope_digest"
+      ],
+      "properties": {
+        "envelope_id": {
+          "type": "string"
+        },
+        "envelope_digest": {
+          "type": "string"
+        }
+      }
+    },
+    "binds_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "decision_digest"
+      ],
+      "properties": {
+        "decision_id": {
+          "type": "string"
+        },
+        "decision_digest": {
+          "type": "string"
+        }
+      }
+    },
+    "candidate_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_args_digest",
+        "candidate_effect_digest"
+      ],
+      "properties": {
+        "candidate_args_digest": {
+          "type": "string"
+        },
+        "candidate_effect_digest": {
+          "type": "string"
+        },
+        "candidate_resource_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "current_state_revalidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_layer1_snapshot_id",
+        "current_layer1_snapshot_digest",
+        "revalidation_sources",
+        "material_delta_from_authority_basis",
+        "material_delta_codes"
+      ],
+      "properties": {
+        "current_layer1_snapshot_id": {
+          "type": "string"
+        },
+        "current_layer1_snapshot_digest": {
+          "type": "string"
+        },
+        "revalidation_sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object"
+          }
+        },
+        "material_delta_from_authority_basis": {
+          "type": "boolean"
+        },
+        "material_delta_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "conformance_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "args_digest_matches",
+        "effect_digest_matches",
+        "resource_scope_matches",
+        "protected_surface_scope_matches",
+        "forbidden_side_effects_detected",
+        "undeclared_surface_contacts",
+        "token_valid",
+        "token_expired",
+        "token_replayed"
+      ],
+      "properties": {
+        "args_digest_matches": {
+          "type": "boolean"
+        },
+        "effect_digest_matches": {
+          "type": "boolean"
+        },
+        "resource_scope_matches": {
+          "type": "boolean"
+        },
+        "protected_surface_scope_matches": {
+          "type": "boolean"
+        },
+        "forbidden_side_effects_detected": {
+          "type": "boolean"
+        },
+        "forbidden_side_effect_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "undeclared_surface_contacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token_valid": {
+          "type": "boolean"
+        },
+        "token_expired": {
+          "type": "boolean"
+        },
+        "token_replayed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "drift_analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "draft_to_intent_drift",
+        "draft_to_decision_drift",
+        "behavioral_pattern_risk",
+        "pattern_window_refs",
+        "integrity_plane_alerts"
+      ],
+      "properties": {
+        "draft_to_intent_drift": {
+          "type": "boolean"
+        },
+        "draft_to_decision_drift": {
+          "type": "boolean"
+        },
+        "behavioral_pattern_risk": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL"
+          ]
+        },
+        "pattern_window_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "integrity_plane_alerts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "commit_safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "safe_to_commit",
+        "safe_to_write_layer0_receipt",
+        "requires_reauth",
+        "requires_human_review",
+        "reset_required"
+      ],
+      "properties": {
+        "safe_to_commit": {
+          "type": "boolean"
+        },
+        "safe_to_write_layer0_receipt": {
+          "type": "boolean"
+        },
+        "requires_reauth": {
+          "type": "boolean"
+        },
+        "requires_human_review": {
+          "type": "boolean"
+        },
+        "reset_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "edge_validity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution_guard_mode",
+        "edge_revalidation_required",
+        "edge_revalidation_ttl_ms"
+      ],
+      "properties": {
+        "execution_guard_mode": {
+          "enum": [
+            "OCC",
+            "LEASE",
+            "SERIALIZABLE_TXN",
+            "NONE"
+          ]
+        },
+        "certified_state_version_ref": {
+          "type": "string"
+        },
+        "certified_state_version_digest": {
+          "type": "string"
+        },
+        "certified_lease_id": {
+          "type": "string"
+        },
+        "lease_valid_at_certification": {
+          "type": "boolean"
+        },
+        "edge_revalidation_required": {
+          "type": "boolean"
+        },
+        "edge_revalidation_ttl_ms": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "reconciliation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "indoubt_ttl_ms",
+        "heartbeat_required",
+        "reconcile_mode",
+        "compensation_allowed",
+        "max_reconcile_attempts"
+      ],
+      "properties": {
+        "indoubt_ttl_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "heartbeat_required": {
+          "type": "boolean"
+        },
+        "reconcile_mode": {
+          "enum": [
+            "AUTO",
+            "HUMAN_ASSISTED",
+            "HUMAN_REQUIRED"
+          ]
+        },
+        "compensation_allowed": {
+          "type": "boolean"
+        },
+        "max_reconcile_attempts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "reason_codes"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "CERTIFIED",
+            "BLOCKED",
+            "REQUIRES_REAUTH",
+            "ESCALATE",
+            "RESET_REQUIRED"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "payload_digest",
+        "signature_alg",
+        "signed_by",
+        "signature"
+      ],
+      "properties": {
+        "payload_digest": {
+          "type": "string"
+        },
+        "signature_alg": {
+          "const": "Ed25519"
+        },
+        "signed_by": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "edge_validity": {
+            "properties": {
+              "execution_guard_mode": {
+                "const": "OCC"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "edge_validity": {
+            "required": [
+              "certified_state_version_ref",
+              "certified_state_version_digest"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "edge_validity": {
+            "properties": {
+              "execution_guard_mode": {
+                "const": "LEASE"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "edge_validity": {
+            "required": [
+              "certified_lease_id",
+              "lease_valid_at_certification"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verdict": {
+            "properties": {
+              "outcome": {
+                "const": "CERTIFIED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "commit_safety": {
+            "properties": {
+              "safe_to_commit": {
+                "const": true
+              },
+              "requires_reauth": {
+                "const": false
+              },
+              "reset_required": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verdict": {
+            "properties": {
+              "outcome": {
+                "const": "REQUIRES_REAUTH"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "commit_safety": {
+            "properties": {
+              "requires_reauth": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verdict": {
+            "properties": {
+              "outcome": {
+                "const": "RESET_REQUIRED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "commit_safety": {
+            "properties": {
+              "reset_required": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "artifact_digests": {
+    "ccr.json": "blake3:eefd2d7c21f896c88d7311d7429da55779520e9c85028e1f2077542d99909743",
+    "receipt_sample_0": "blake3:60e447ac47bafd9b7b937dcfb400ca6b29928f133d5ae5f8cb21229dddcf3cfa",
+    "srm.json": "blake3:77c05bc013dadeec481456c747381c7079d72c625fb199d11dad5be656e9ae2c"
+  },
+  "checks": [
+    {
+      "check_id": "SCHEMA_VALIDATE",
+      "details": "All artifacts validate against Draft 2020-12 schemas.",
+      "status": "PASS"
+    },
+    {
+      "check_id": "CANONICALIZATION",
+      "details": "JCS RFC8785 canonicalization verified.",
+      "status": "PASS"
+    },
+    {
+      "check_id": "DIGEST_CHAIN",
+      "details": "WAL prev/self digests chain verified.",
+      "status": "PASS"
+    },
+    {
+      "check_id": "SIGNATURES",
+      "details": "All Ed25519 JWS detached signatures verified against trusted key.",
+      "status": "PASS"
+    }
+  ],
+  "generated_at": "2026-02-13T06:03:02+00:00",
+  "overall_status": "PASS",
+  "run_id": "550e8400-e29b-41d4-a716-446655440000",
+  "verifier_report_version": "1.0"
+}

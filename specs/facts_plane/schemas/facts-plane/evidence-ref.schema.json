@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/evidence-ref.schema.json",
+  "title": "EvidenceRef",
+  "type": "object",
+  "required": [
+    "evidence_id",
+    "kind",
+    "locator",
+    "content_digest",
+    "collected_at_utc",
+    "collector"
+  ],
+  "properties": {
+    "evidence_id": { "type": "string", "minLength": 1 },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "witnessed_read",
+        "document",
+        "web_read",
+        "db_read",
+        "tool_output",
+        "system_log",
+        "human_assertion",
+        "summary_artifact",
+        "report_artifact"
+      ]
+    },
+    "locator": { "type": "string", "minLength": 1 },
+    "selector": { "type": ["string", "null"] },
+    "content_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "bytes": { "type": ["integer", "null"], "minimum": 0 },
+    "collected_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" },
+    "collector": {
+      "type": "object",
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "type": "string" },
+        "id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["primary", "derivative", "human", "inferred"]
+    },
+    "source_artifact_id": { "type": ["string", "null"] },
+    "chain_of_custody": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "at_utc", "by"],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["collected", "hashed", "sealed", "projected", "exported", "promoted"]
+          },
+          "at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" },
+          "by": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "kind": { "const": "witnessed_read" } },
+        "required": ["kind"]
+      },
+      "then": {
+        "properties": {
+          "collector": {
+            "properties": { "type": { "const": "system" } },
+            "required": ["type", "id"]
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

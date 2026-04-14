@@ -1,0 +1,79 @@
+{
+  "schema_version": "agi.authority_decision.v7",
+  "decision_id": "adv_example_v6",
+  "authority_clock": {
+    "epoch": 1,
+    "sequence": 2,
+    "issued_at": "2026-04-08T00:00:01Z"
+  },
+  "binds_envelope": {
+    "envelope_id": "iev_example_v6",
+    "envelope_digest": "sha3_256:cae3b60ca6862e3694c019d79f1bc5f2656c45a7fc4784d6b2b2dfdfee07817d"
+  },
+  "authority_basis": {
+    "layer0_constitution_digest": "blake3:constitution",
+    "policy_pack_digest": "blake3:policy",
+    "policy_epoch": 1,
+    "current_layer1_snapshot_id": "l1s_1",
+    "current_layer1_snapshot_digest": "blake3:snap1"
+  },
+  "ruling": {
+    "outcome": "ALLOW",
+    "reason_codes": [
+      "AUTHORITY_ALLOW"
+    ]
+  },
+  "constraints_imposed": {
+    "must_match_args_digest_exactly": true,
+    "required_args_digest": "blake3:args123",
+    "must_match_intended_effect_digest_exactly": true,
+    "required_intended_effect_digest": "blake3:effect123",
+    "must_revalidate_layer1_pre_execution": true,
+    "max_execution_deadline_ms": 2000,
+    "scope_lock": {
+      "tool_name": "calendar.create_event",
+      "tool_method": "create_event",
+      "resource_refs": [
+        "calendar.primary"
+      ],
+      "allowed_effects": [
+        "calendar event created"
+      ],
+      "forbidden_effects": [
+        "modifying unrelated events"
+      ]
+    }
+  },
+  "execution_authority": {
+    "token_issued": true,
+    "token_id": "tok1",
+    "token_digest": "blake3:tok1",
+    "expires_at": "2026-04-08T00:00:02Z",
+    "one_time_use": true
+  },
+  "treason_assessment": {
+    "treason_detected": false,
+    "aa_alert_state": "NONE",
+    "protected_state_probe_count_in_window": 0,
+    "reset_required": false
+  },
+  "execution_guard": {
+    "mode": "OCC",
+    "protected_surface_refs": [
+      "calendar.primary"
+    ],
+    "state_version_ref": "svr1",
+    "state_version_digest": "blake3:sv1",
+    "commit_precondition_digest": "blake3:cp1"
+  },
+  "seal": {
+    "artifact_class": "authority_decision",
+    "payload_digest": "compat-sha3_256:6f0ff6484952e5e4c1237a27f847dfbda478fed0b2b0ca144f0a2d07eb3f29c9",
+    "signature_alg": "Ed25519",
+    "signed_by": "authority_key",
+    "key_id": "authority_key",
+    "signature": "rGXza+P/9uWlx7ZwPwhoj7NBKbT7w7/9aPL4SEeRHBPhmkdz/WaxuMnQ0QwIH8bcnhgH4+B0Dd2NhHEBz9elBQ==",
+    "canonical_backend": "fixture-build",
+    "signature_source": "fixture-generated"
+  }
+}

@@ -1,0 +1,16 @@
+bundle_id: execution_without_certification_bundle_v7
+expected_outcome: FAIL
+declared_path:
+- PROPOSED
+- UNDER_AUTHORITY_REVIEW
+- AUTHORIZED
+- EXECUTING
+- RESULT_OBSERVED
+- TERMINAL_SUCCESS
+artifacts:
+- schema: agi.intent_envelope.v7.schema.json
+  file: ../artifacts/intent_envelope_minimal.v7.json
+- schema: agi.authority_decision.v7.schema.json
+  file: ../artifacts/authority_decision_allow_occ_minimal.v7.json
+- schema: agi.result_receipt.v7.schema.json
+  file: ../artifacts/result_receipt_transactional_independent_minimal.v7.json

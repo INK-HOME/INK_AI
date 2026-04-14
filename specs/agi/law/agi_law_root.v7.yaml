@@ -1,0 +1,282 @@
+release:
+  name: AGI Governance Closure Pack v7
+  version: v7.0.0-closure
+  date: '2026-04-08'
+  constitution_version: agi-constitution.v7
+  schema_pack_version: agi-schemas.v7
+  transition_pack_version: agi-transitions.v7
+  verifier_version: agi-verifier.v7.2
+  fixture_pack_version: agi-fixtures.v7
+  membrane_binding_version: agi-membrane-binding.v1.4
+corridor_states:
+- PROPOSED
+- UNDER_AUTHORITY_REVIEW
+- DENIED
+- REWRITE_REQUIRED
+- ESCALATED
+- TREASON_FLAGGED
+- AUTHORIZED
+- CERTIFICATION_PENDING
+- BLOCKED_BY_INTEGRITY
+- REAUTH_REQUIRED
+- CERTIFIED
+- EXECUTION_READY
+- EXECUTING
+- IN_DOUBT
+- RECONCILING
+- RESULT_OBSERVED
+- TERMINAL_SUCCESS
+- TERMINAL_FAILURE
+- RESET_REQUIRED
+- PROVED
+terminal_states:
+- DENIED
+- REWRITE_REQUIRED
+- ESCALATED
+- TREASON_FLAGGED
+- BLOCKED_BY_INTEGRITY
+- RESET_REQUIRED
+- TERMINAL_SUCCESS
+- TERMINAL_FAILURE
+- PROVED
+events:
+- ENVELOPE_SEALED
+- AUTHORITY_REVIEW_STARTED
+- AUTHORITY_ALLOW_ISSUED
+- AUTHORITY_DENY_ISSUED
+- AUTHORITY_REWRITE_ISSUED
+- AUTHORITY_ESCALATE_ISSUED
+- AUTHORITY_TREASON_ISSUED
+- CANDIDATE_PATH_BOUND
+- INTEGRITY_CERTIFIED
+- INTEGRITY_BLOCKED
+- INTEGRITY_REAUTH_REQUIRED
+- INTEGRITY_ESCALATE
+- INTEGRITY_RESET_REQUIRED
+- EXECUTION_READY_CONFIRMED
+- EXECUTION_STARTED
+- EDGE_REVALIDATION_FAILED_STALE_STATE
+- EDGE_REVALIDATION_FAILED_ESCALATE
+- EDGE_REVALIDATION_FAILED_RESET
+- TERMINAL_OBSERVATION_REACHED
+- EXECUTION_UNCERTAINTY_TRIGGERED
+- RECONCILIATION_STARTED
+- RECONCILIATION_RESOLVED
+- RECONCILIATION_ESCALATE
+- RECONCILIATION_RESET_REQUIRED
+- INDOUBT_ESCALATE
+- INDOUBT_RESET_REQUIRED
+- RESULT_CLASSIFIED_SUCCESS
+- RESULT_CLASSIFIED_FAILURE
+- REPLAY_PROOF_PASS
+- NEW_ENVELOPE_SUPERSEDES
+- REWRITTEN_ENVELOPE_SEALED
+- FRESH_AUTHORITY_PATH_STARTED
+- RESET_COMPLETED_AND_NEW_PATH_STARTED
+- INCIDENT_CONTAINED_AND_NEW_PATH_STARTED
+execution_guard_modes:
+- OCC
+- LEASE
+- SERIALIZABLE_TXN
+- NONE
+readback_modes:
+- SELF
+- INDEPENDENT
+- QUORUM
+resolution_modes:
+- DIRECT
+- RECONCILED
+- COMPENSATED
+- UNKNOWN_BOUNDED
+reason_code_families:
+- AUTHORITY_*
+- INTEGRITY_*
+- TOKEN_*
+- STATE_*
+- SCOPE_*
+- RESULT_*
+- PROOF_*
+- READBACK_*
+- DRIFT_*
+- TREASON_*
+- RESET_*
+- INCIDENT_*
+- INGRESS_*
+- REAUTH_*
+contradiction_codes:
+- C001_DIGEST_CHAIN_MISMATCH
+- C002_DECISION_TOKEN_CONTRADICTION
+- C003_CERTIFICATION_SCOPE_CONTRADICTION
+- C004_POST_DENY_EXECUTION
+- C005_POST_TREASON_EXECUTION
+- C006_RESULT_CLASS_CONTRADICTION
+- C007_BINDING_LINEAGE_BREAK
+- C008_POLICY_BASIS_CONTRADICTION
+- C009_STATE_ORDER_CONTRADICTION
+- C010_PROOF_SELF_CONTRADICTION
+- C011_EDGE_STATE_VERSION_CONTRADICTION
+- C012_LEASE_CONTRADICTION
+- C013_EXECUTION_UNRESOLVED_BUT_DIRECT_SUCCESS_CLAIMED
+- C014_RECONCILIATION_BINDING_BREAK
+- C015_QUORUM_READBACK_CONTRADICTION
+- C016_RECONCILE_ARTIFACT_MISSING_OR_MISBOUND
+evidence_profiles:
+  denial:
+  - IntentEnvelope
+  - AuthorityDecision
+  rewrite:
+  - IntentEnvelope
+  - AuthorityDecision
+  escalation:
+  - IntentEnvelope
+  - AuthorityDecision
+  treason:
+  - IntentEnvelope
+  - AuthorityDecision
+  - IncidentOrResetArtifact
+  executional:
+  - IntentEnvelope
+  - AuthorityDecision
+  - IntegrityCertification
+  - ResultReceipt
+  proof:
+  - IntentEnvelope
+  - AuthorityDecision
+  - IntegrityCertification
+  - ResultReceipt
+  - ReplayProof
+  reconciliation:
+  - IntentEnvelope
+  - AuthorityDecision
+  - IntegrityCertification
+  - ReconcileReceipt
+  - ResultReceipt
+derivation_contract:
+  authoritative_source: law/agi_law_root.v6.yaml
+  derived_outputs:
+  - transitions/agi_corridor_states.v6.yaml
+  - verifier/verifier_outcome_contract.v6.yaml
+  - RELEASE_MANIFEST.v6.yaml
+  - generated/fixture_inventory.v6.json
+  - generated/fixture_expectation_index.v6.json
+  - generated/coverage_summary.v6.json
+  - generated/transition_index.v6.json
+  - generated/law_projection.v6.json
+  - generated/schema_inventory.v6.json
+  - generated/example_inventory.v6.json
+  release_gate: tools/release_gate.py
+  build_tool: tools/build_derived_pack.py
+  conformance_runner: tools/run_conformance.py
+release_gate_checks:
+- component_paths_exist
+- versions_match_law_root
+- states_match_law_root
+- verifier_contract_matches_law_root
+- transition_states_and_events_legal
+- required_dangerous_exits_present
+- stale_reauth_routes_to_reauth_required
+- no_direct_reconciliation_after_indoubt
+- required_fixtures_present
+- fixture_paths_legal
+- schema_semantic_guards_present
+- fixture_schema_validation
+- fixture_outcome_category_consistency
+- critical_corridor_class_coverage
+- critical_fixture_regression_coverage
+- conformance_runner_passes
+- schema_identity_matches_version
+- generated_reports_match_law_root
+- representative_artifact_examples_present
+- representative_artifact_examples_validate
+- representative_bundle_examples_validate
+auxiliary_milestones:
+- Layer0FinalCommit
+corridor_classes:
+- denial
+- rewrite
+- escalation
+- treason
+- execution_success
+- execution_failure
+- best_effort_unknown_bounded
+- lawful_reauth_restart
+- lawful_reset_restart
+- illegal_execution
+- stale_authority_execution
+- fake_transactional_success
+- stale_reauth_breach
+- premature_fact_commit
+- incomplete_execution
+- incomplete_treason_containment
+- hybrid_settlement_required
+- impossible_post_deny
+- impossible_post_treason
+- impossible_scope_chain
+- proof_self_contradiction
+- lineage_break
+- stale_edge_occ_execution
+- lost_lease_before_execution
+- missing_indoubt_transition
+- self_certifying_readback
+- reconciled_success
+- quorum_readback_success
+- quorum_readback_no_consensus
+conformance:
+  expected_verifier_outcomes:
+  - PASS
+  - FAIL
+  - INCOMPLETE
+  - CONTRADICTED
+  expected_check_values:
+  - PASS
+  - FAIL
+  - INCOMPLETE
+  - CONTRADICTED
+  required_check_families:
+  - artifact_integrity
+  - artifact_completeness
+  - cross_artifact_binding
+  - transition_legality
+  - contradiction_status
+  folder_outcome_map:
+    pass: PASS
+    fail: FAIL
+    incomplete: INCOMPLETE
+    contradicted: CONTRADICTED
+  minimum_fixture_counts:
+    pass: 10
+    fail: 8
+    incomplete: 4
+    contradicted: 7
+  required_pass_corridor_classes:
+  - denial
+  - rewrite
+  - escalation
+  - treason
+  - execution_success
+  - execution_failure
+  - best_effort_unknown_bounded
+  - lawful_reauth_restart
+  - lawful_reset_restart
+  - reconciled_success
+  - transactional_quorum_success
+  required_regression_fixture_ids:
+  - F002
+  - F003
+  - F004
+  - F101
+  - F106
+  - F107
+  - F108
+  - F109
+  - F201
+  - F202
+  - F301
+  - F302
+  - F303
+  - F304
+  - F305
+  - F306
+  - F307
+  - F401
+  - F402

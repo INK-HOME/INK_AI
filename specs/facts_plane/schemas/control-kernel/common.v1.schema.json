@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1",
+  "title": "dot.ink Common Definitions v1",
+  "description": "Shared $defs referenced by all dot.ink v1 schemas via $ref. Not used as a standalone document schema.",
+
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "RFC 4122 UUID v4 (lowercase hex, hyphenated)"
+    },
+
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "iso8601": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "ISO 8601 datetime with timezone offset (e.g. 2026-02-27T14:30:00Z)"
+    },
+
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?$",
+      "description": "Semantic version string (MAJOR.MINOR.PATCH)"
+    },
+
+    "digest": {
+      "type": "string",
+      "pattern": "^(sha256|sha512|blake3):[0-9a-f]{64,128}$",
+      "description": "Prefixed hex digest: 'sha256:<64hex>' | 'sha512:<128hex>' | 'blake3:<64hex>'"
+    },
+
+    "profile": {
+      "type": "string",
+      "enum": ["DEV", "ENTERPRISE", "STRICT"],
+      "description": "dot.ink deployment profile. DEV=fast iteration, ENTERPRISE=production-safe, STRICT=insurable/independently verifiable."
+    },
+
+    "lifecycleState": {
+      "type": "string",
+      "enum": ["APPROVED", "BLOCKED", "PENDING_REVIEW", "RECONCILE_PENDING", "DEAD"],
+      "description": "Decision lifecycle state. RECONCILE_PENDING=in-doubt awaiting reconciler. DEAD=terminal failure with explicit reason."
+    },
+
+    "toolClass": {
+      "type": "string",
+      "enum": ["transactional", "best-effort", "irreversible"],
+      "description": "DTM side-effect classification. Drives autonomy clamp and retry behaviour."
+    },
+
+    "hardBoundaryRef": {
+      "type": "object",
+      "description": "Reference to a HardBoundaryValidationResult that was active when this receipt was issued.",
+      "properties": {
+        "validation_id": { "$ref": "#/$defs/uuid" },
+        "validation_digest": { "$ref": "#/$defs/digest" }
+      },
+      "required": ["validation_id", "validation_digest"],
+      "additionalProperties": false
+    },
+
+    "evidenceLeafType": {
+      "type": "string",
+      "enum": [
+        "INTENT_RECEIPT",
+        "BREAK_GLASS_RECEIPT",
+        "CONFIG_CHANGE_RECEIPT",
+        "SAGA_RECEIPT",
+        "HARD_BOUNDARY_VALIDATION_RESULT",
+        "NETWORK_FLOW_LOG_SLICE",
+        "FIREWALL_DENY_EVENT",
+        "DNS_DENY_EVENT",
+        "IAM_AUDIT_EVENT_SLICE",
+        "MTLS_AUTHZ_DECISION_LOG",
+        "VERIFIER_RUN_REPORT",
+        "AUDIT_CHAIN_SLICE",
+        "COLD_BUNDLE_MANIFEST",
+        "COMPLETENESS_LEDGER_SNAPSHOT"
+      ],
+      "description": "Type tag for evidence bundle leaf nodes. STRICT profile mandates specific leaf types per decision."
+    }
+  }
+}

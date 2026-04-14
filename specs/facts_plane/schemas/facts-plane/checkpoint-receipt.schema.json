@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/checkpoint-receipt.schema.json",
+  "title": "CheckpointReceipt",
+  "allOf": [
+    { "$ref": "receipt.schema.json" },
+    {
+      "type": "object",
+      "required": ["checkpoint_name", "checkpoint_digest"],
+      "properties": {
+        "checkpoint_name": { "type": "string", "minLength": 1 },
+        "checkpoint_digest": { "$ref": "common.schema.json#/$defs/DigestString" }
+      },
+      "additionalProperties": true
+    }
+  ]
+}

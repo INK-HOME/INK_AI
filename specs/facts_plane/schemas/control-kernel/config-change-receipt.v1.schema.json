@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/config-change-receipt/v1",
+  "title": "ConfigChangeReceipt",
+  "description": "Tamper-evident record of any configuration change: policy load, schema epoch change, credential rotation, verifier version change, retention policy change. Written to the audit chain on every change. Epoch monotonicity is enforced by the offline verifier.",
+  "type": "object",
+  "required": [
+    "kind",
+    "change_type",
+    "timestamp",
+    "policy_epoch",
+    "audit_chain_seq",
+    "prev_digest",
+    "audit_digest"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "const": "CONFIG_CHANGE"
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "POLICY_LOAD",
+        "SCHEMA_EPOCH",
+        "CREDENTIAL_ROTATION",
+        "VERIFIER_VERSION",
+        "RETENTION_POLICY"
+      ]
+    },
+    "policy_id": {
+      "type": "string"
+    },
+    "new_epoch": {
+      "type": "integer"
+    },
+    "changed_by": {
+      "type": "string"
+    },
+    "change_reason": {
+      "type": "string"
+    },
+    "break_glass_active": {
+      "type": "boolean"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "policy_epoch": {
+      "type": "integer"
+    },
+    "audit_chain_seq": {
+      "type": "integer"
+    },
+    "prev_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "audit_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

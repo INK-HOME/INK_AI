@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/state-transition-payload.schema.json",
+  "title": "StateTransitionPayload",
+  "type": "object",
+  "required": ["entity_id", "from_state", "to_state"],
+  "properties": {
+    "entity_id": { "type": "string", "minLength": 1 },
+    "from_state": { "type": "string", "minLength": 1 },
+    "to_state": { "type": "string", "minLength": 1 },
+    "reason_code": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

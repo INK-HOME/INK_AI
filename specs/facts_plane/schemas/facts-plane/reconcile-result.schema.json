@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "reconcile-result.schema.json",
+  "title": "ReconcileResult",
+  "type": "object",
+  "required": [
+    "reconcile_id",
+    "action_digest",
+    "status",
+    "resolved_at_utc"
+  ],
+  "properties": {
+    "reconcile_id": {
+      "type": "string"
+    },
+    "action_digest": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "COMPLETED",
+        "FAILED",
+        "ESCALATED"
+      ]
+    },
+    "provider_receipt_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "readback_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resolved_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

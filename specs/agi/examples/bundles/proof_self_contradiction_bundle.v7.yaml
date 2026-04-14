@@ -1,0 +1,16 @@
+bundle_id: proof_self_contradiction_v7
+expected_outcome: CONTRADICTED
+declared_path:
+- PROPOSED
+- UNDER_AUTHORITY_REVIEW
+- AUTHORIZED
+- EXECUTING
+- RESULT_OBSERVED
+- TERMINAL_SUCCESS
+artifacts:
+- schema: agi.intent_envelope.v7.schema.json
+  file: ../artifacts/intent_envelope_minimal.v7.json
+- schema: agi.authority_decision.v7.schema.json
+  file: ../artifacts/authority_decision_allow_occ_minimal.v7.json
+- schema: agi.replay_proof.v7.schema.json
+  file: ../artifacts/replay_proof_pass_minimal.v7.json

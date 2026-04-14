@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AGI Fixture Case v7",
+  "type": "object",
+  "required": [
+    "fixture_id",
+    "corridor_class",
+    "description",
+    "artifacts_present",
+    "claimed_transition_path",
+    "critical_bindings",
+    "mutations_or_faults",
+    "expected_check_results",
+    "expected_verifier_outcome",
+    "expected_reason_codes",
+    "expected_contradiction_codes"
+  ],
+  "properties": {
+    "fixture_id": {
+      "type": "string",
+      "pattern": "^F\\d+[A-Za-z]?$"
+    },
+    "corridor_class": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifacts_present": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "claimed_transition_path": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2
+    },
+    "critical_bindings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mutations_or_faults": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_check_results": {
+      "type": "object",
+      "required": [
+        "artifact_integrity",
+        "artifact_completeness",
+        "cross_artifact_binding",
+        "transition_legality",
+        "contradiction_status"
+      ],
+      "properties": {
+        "artifact_integrity": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INCOMPLETE",
+            "CONTRADICTED"
+          ]
+        },
+        "artifact_completeness": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INCOMPLETE",
+            "CONTRADICTED"
+          ]
+        },
+        "cross_artifact_binding": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INCOMPLETE",
+            "CONTRADICTED"
+          ]
+        },
+        "transition_legality": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INCOMPLETE",
+            "CONTRADICTED"
+          ]
+        },
+        "contradiction_status": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INCOMPLETE",
+            "CONTRADICTED"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "expected_verifier_outcome": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCOMPLETE",
+        "CONTRADICTED"
+      ]
+    },
+    "expected_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_contradiction_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$id": "agi.fixture_case.v7.schema.json"
+}

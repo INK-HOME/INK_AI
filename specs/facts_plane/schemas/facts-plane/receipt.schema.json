@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/receipt.schema.json",
+  "title": "Receipt",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "trace_id",
+    "tenant_id",
+    "covered_event_ids",
+    "root_digest",
+    "sealed_at_utc"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "covered_event_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "root_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "policy_pack_digest": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    },
+    "evidence_bundle_digest": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    },
+    "sealed_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" },
+    "witness_anchor": {
+      "type": ["object", "null"],
+      "properties": {
+        "service": { "type": "string", "minLength": 1 },
+        "anchor_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+        "anchored_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" }
+      },
+      "additionalProperties": false
+    },
+    "signatures": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/Signature" }
+    }
+  },
+  "additionalProperties": false
+}

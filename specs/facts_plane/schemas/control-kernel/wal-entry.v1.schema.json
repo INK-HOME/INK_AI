@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/wal-entry/v1",
+  "title": "dot.ink WAL Entry",
+  "description": "A single record in the dot.ink Write-Ahead Log (WAL). Every entry is a self-contained, verifiable audit event. The chain of entries is secured by BLAKE3 digest chaining and Ed25519 signatures.",
+  "type": "object",
+  "required": [
+    "rec",
+    "sig",
+    "digest"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "rec": {
+      "type": "object",
+      "required": [
+        "v",
+        "kind",
+        "decision_id",
+        "tick",
+        "gov",
+        "idem",
+        "payload_digest",
+        "prev"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "type": "integer",
+          "const": 1,
+          "description": "Schema version. Always 1."
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "EXECUTING",
+            "POST_EXEC",
+            "SYSTEM_REVERT"
+          ],
+          "description": "EXECUTING=intent accepted, POST_EXEC=outcome recorded, SYSTEM_REVERT=compensation applied"
+        },
+        "decision_id": {
+          "type": "string",
+          "description": "UUID for the governed decision (same across EXECUTING+POST_EXEC pair)"
+        },
+        "tick": {
+          "type": "integer",
+          "description": "Hybrid Logical Clock: upper 48 bits = Unix ms, lower 16 bits = logical counter. Monotonically increasing across the chain."
+        },
+        "gov": {
+          "type": "object",
+          "required": [
+            "epoch",
+            "policy_id"
+          ],
+          "properties": {
+            "epoch": {
+              "type": "integer",
+              "description": "Monotonically increasing policy epoch at time of decision"
+            },
+            "policy_id": {
+              "type": "string",
+              "description": "Human-readable policy identifier"
+            }
+          }
+        },
+        "idem": {
+          "type": "string",
+          "description": "Idempotency key. Re-submitting the same idem key returns the existing digest without double-writing."
+        },
+        "payload_digest": {
+          "type": "string",
+          "pattern": "^blake3:[0-9a-f]{64}$",
+          "description": "BLAKE3 hex digest of the agent payload bytes"
+        },
+        "prev": {
+          "type": "string",
+          "pattern": "^(GENESIS|blake3:[0-9a-f]{64})$",
+          "description": "Digest of the preceding WAL entry, or 'GENESIS' for the first entry"
+        }
+      }
+    },
+    "sig": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{128}$",
+      "description": "Ed25519 signature over the canonical JSON serialisation of 'rec' (hex-encoded, 64 bytes)"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^blake3:[0-9a-f]{64}$",
+      "description": "BLAKE3(rec_json_bytes || sig_hex_bytes). Unique content-addressable identifier for this entry."
+    }
+  },
+  "examples": [
+    {
+      "rec": {
+        "v": 1,
+        "kind": "EXECUTING",
+        "decision_id": "d1e2f3a4-b5c6-7890-abcd-ef1234567890",
+        "tick": 111994837401600000,
+        "gov": {
+          "epoch": 7,
+          "policy_id": "dotink-finance-v7"
+        },
+        "idem": "trade-2024-02-25-seq-1042",
+        "payload_digest": "blake3:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "prev": "blake3:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "sig": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "digest": "blake3:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "execution": [
+    "tool.call.prepared",
+    "tool.call.started",
+    "tool.call.completed"
+  ],
+  "request": [
+    "request.received",
+    "request.normalized"
+  ],
+  "receipt": [
+    "receipt.sealed"
+  ]
+}

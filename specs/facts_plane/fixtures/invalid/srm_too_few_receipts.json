@@ -1,0 +1,53 @@
+{
+  "codebase": {
+    "build_digest": "sha256:01b2b31631b74c016b8cd364ff306827c67f5c3943682ece5f9d6990f1e5bd9a",
+    "git_sha": "a1b2c3d4e5f67890a1b2c3d4e5f67890a1b2c3d4",
+    "k6_script_digest": "blake3:c1ab330c8177958be151fa175ff5141c06a5a38e0b778548e24e3b9d4ce1b63d"
+  },
+  "ended_at": "2026-02-13T06:03:02+00:00",
+  "environment": {
+    "fingerprint_digest": "blake3:bb965c8ebd5dc38bc0abfa7122443915d6feea32c9d07140f0d0cd5323db95b8",
+    "instance_type": "local-docker",
+    "node_count": 1
+  },
+  "evidence": {
+    "receipt_sample_hashes": [
+      "blake3:bc1d1da77030a4785a2a2505a9444b1659ef42726c48c2e27e0a560937f7aa93",
+      "blake3:89534727e5a3ab882e1fed4c9b9e62a35f3e1c4d92d9265f0ec4f1c9efa55c6a"
+    ]
+  },
+  "governance": {
+    "authority_clock": {
+      "domain": "mai",
+      "end_tick": 101200,
+      "monotonicity_verified": true,
+      "start_tick": 100000
+    },
+    "policy_digest": "blake3:5ce448cf24ebc5da55ad37458a2eb278bff2c9dd4abce5b3ad7352f76bab25d5",
+    "policy_epoch": 42,
+    "schema_pack_digest": "blake3:d0292703c96289666ba1324e1d3c3053767fbc527582797995b230ff8e48603e"
+  },
+  "metrics": {
+    "error_rate": 0.0,
+    "p95_latency_ms": 80.2,
+    "throughput_rps": 10.0,
+    "total_requests": 1200
+  },
+  "run_id": "550e8400-e29b-41d4-a716-446655440000",
+  "run_type": "LOAD_SOAK",
+  "signature": {
+    "alg": "EdDSA",
+    "canonicalization": {
+      "hash_alg": "BLAKE3-256",
+      "hash_format": "blake3:<64hex>",
+      "jcs_rfc8785": true,
+      "jws_compact_detached": true,
+      "signing_alg": "EdDSA",
+      "signing_curve": "Ed25519"
+    },
+    "jws_detached": "p1ACmYbhaGRIaRkzJFGwlBhD..aHTxKk0OKGfvvs8wBAQIKNL-uDWrZKzNoXYuJJIOgtXAFf4CA0Z_0aHwF0ZfcDYmNOd4F51ZfEOPejFTHQ5YVw",
+    "kid": "mai-ci-001"
+  },
+  "srm_version": "1.0",
+  "started_at": "2026-02-13T06:03:02+00:00"
+}

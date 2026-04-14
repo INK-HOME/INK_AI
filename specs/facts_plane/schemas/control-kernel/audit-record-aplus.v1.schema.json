@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/audit-record-aplus/v1",
+  "title": "AuditRecord APLUS v1",
+  "description": "Schema for a single record in the dot.ink tamper-evident audit chain. Mirrors verify_audit.py digest logic exactly. Chain digest formula: SHA256(prev_digest + '|' + kind + '|' + intent_id + '|' + seq + '|' + timestamp). Records without audit_chain_seq predate chain-linking; verifier emits MISSING_CHAIN_SEQ warning and cannot verify those. STRICT deployments must prohibit unchained records from genesis.",
+
+  "type": "object",
+  "required": ["kind", "seq", "timestamp"],
+  "additionalProperties": true,
+
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "BLOCKED",
+        "PENDING_REVIEW",
+        "CONFIG_CHANGE",
+        "BREAK_GLASS",
+        "BREAK_GLASS_CLOSED",
+        "HARD_BOUNDARY_VALIDATION",
+        "SAGA_STEP",
+        "SAGA_COMPLETED",
+        "SAGA_FAILED",
+        "SAGA_COMPENSATED",
+        "CHECKPOINT",
+        "INCIDENT"
+      ],
+      "description": "Record type. CHECKPOINT records carry Merkle root over the preceding window."
+    },
+
+    "intent_id": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 128,
+      "description": "Intent identifier. May be empty for non-decision record types."
+    },
+
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Server-local sequence counter. Distinct from audit_chain_seq."
+    },
+
+    "timestamp": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "ISO 8601 datetime. Used in digest computation — must not be modified after write."
+    },
+
+    "audit_chain_seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Monotonically increasing position in the tamper-evident chain. Present on all chained records."
+    },
+
+    "prev_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 digest of the preceding chain entry (or GENESIS_DIGEST for seq=1). Used by verifier to detect chain breaks."
+    },
+
+    "audit_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of SHA256(prev_digest + '|' + kind + '|' + intent_id + '|' + seq + '|' + timestamp). Recomputed by verify_audit.py on every record."
+    },
+
+    "policy_epoch": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Active policy epoch at record time. Verifier enforces monotonicity: no record may have epoch < previous record's epoch."
+    },
+
+    "break_glass_active": {
+      "type": "boolean",
+      "description": "True if a break-glass window was active when this record was written. Verifier emits BREAK_GLASS_WINDOW finding for APPROVED/BLOCKED records with this set."
+    },
+
+    "profile": {
+      "type": "string",
+      "enum": ["DEV", "ENTERPRISE", "STRICT"],
+      "description": "Deployment profile active at record time. Used by verifier to determine which rules apply."
+    },
+
+    "merkle_root": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "CHECKPOINT only. Merkle root over audit_digest values of all records since the last checkpoint. Verifier recomputes and compares."
+    },
+
+    "record_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "CHECKPOINT only. Number of records covered by merkle_root. Verifier uses this to select the correct digest window."
+    },
+
+    "_source_file": {
+      "type": "string",
+      "description": "Added by load_records() in verify_audit.py. Not present in the raw audit file."
+    },
+
+    "_source_line": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Added by load_records() in verify_audit.py. Not present in the raw audit file."
+    }
+  },
+
+  "allOf": [
+    {
+      "description": "Any record that has audit_chain_seq must also have prev_digest and audit_digest. This is checked by the verifier as MISSING_DIGEST.",
+      "if": {
+        "required": ["audit_chain_seq"],
+        "properties": { "audit_chain_seq": { "type": "integer" } }
+      },
+      "then": {
+        "required": ["prev_digest", "audit_digest"]
+      }
+    },
+    {
+      "description": "CHECKPOINT records must have merkle_root, record_count, and full chain fields.",
+      "if": {
+        "properties": { "kind": { "const": "CHECKPOINT" } },
+        "required": ["kind"]
+      },
+      "then": {
+        "required": ["merkle_root", "record_count", "audit_chain_seq", "prev_digest", "audit_digest"]
+      }
+    },
+    {
+      "description": "BREAK_GLASS records must have approvers and expiry_utc. Missing either is a verifier FAIL.",
+      "if": {
+        "properties": { "kind": { "const": "BREAK_GLASS" } },
+        "required": ["kind"]
+      },
+      "then": {
+        "required": ["approvers", "expiry_utc", "reason", "invoked_by"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "invocation-token.v1.schema.json",
+  "title": "InvocationToken",
+  "type": "object",
+  "required": [
+    "payload",
+    "mac"
+  ],
+  "properties": {
+    "payload": {
+      "type": "object",
+      "required": [
+        "ver",
+        "tool_name",
+        "args_digest",
+        "policy_epoch",
+        "expires_at_utc",
+        "adapter_id",
+        "token_id",
+        "one_time_use",
+        "tenant_id",
+        "trace_id",
+        "expected_side_effects_digest",
+        "nonce",
+        "issued_at_utc",
+        "evidence_digest"
+      ],
+      "properties": {
+        "ver": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "trace_id": {
+          "type": "string"
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "args_digest": {
+          "type": "string"
+        },
+        "expected_side_effects_digest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "policy_epoch": {
+          "type": "integer"
+        },
+        "expires_at_utc": {
+          "type": "string"
+        },
+        "adapter_id": {
+          "type": "string"
+        },
+        "token_id": {
+          "type": "string"
+        },
+        "one_time_use": {
+          "type": "boolean"
+        },
+        "mtls_fingerprint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nonce": {
+          "type": "string"
+        },
+        "issued_at_utc": {
+          "type": "string"
+        },
+        "evidence_digest": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "mac": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

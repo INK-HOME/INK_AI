@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "snapshot-manifest.schema.json",
+  "title": "SnapshotManifest",
+  "type": "object",
+  "required": [
+    "snapshot_id",
+    "trace_id",
+    "checkpoint_receipt_id",
+    "snapshot_digest",
+    "created_at_utc"
+  ],
+  "properties": {
+    "snapshot_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "checkpoint_receipt_id": {
+      "type": "string"
+    },
+    "snapshot_digest": {
+      "type": "string"
+    },
+    "created_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

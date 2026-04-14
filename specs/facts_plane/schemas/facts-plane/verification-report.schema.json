@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "verification-report.schema.json",
+  "title": "VerificationReport",
+  "type": "object",
+  "required": [
+    "trace_id",
+    "tenant_id",
+    "ok",
+    "checked_events",
+    "checked_receipts",
+    "failures"
+  ],
+  "properties": {
+    "trace_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "checked_events": {
+      "type": "integer"
+    },
+    "checked_receipts": {
+      "type": "integer"
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

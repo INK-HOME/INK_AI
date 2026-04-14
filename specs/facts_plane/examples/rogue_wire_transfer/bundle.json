@@ -1,0 +1,126 @@
+{
+  "bundle_id": "bndl_rogue_001",
+  "trace_id": "trace_rogue_001",
+  "tenant_id": "tenant_demo",
+  "verification_report": {
+    "status": "UNVERIFIED_PENDING_RUN",
+    "generated_by": "fp-export-node",
+    "scenario": "rogue_resubmission_attempt"
+  },
+  "control_envelopes": [
+    {
+      "trace_id": "trace_rogue_001",
+      "tenant_id": "tenant_demo",
+      "risk_tier": "critical",
+      "tool_name": "adapter.banking.wire_funds",
+      "args_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+      "expected_side_effects_digest": "blake3-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "policy_epoch": "2026-03-01",
+      "review_required": true,
+      "adapter_id": "adp_chase_commercial_04",
+      "mtls_fingerprint": "sha256:deadbeef",
+      "evidence_refs": [
+        "evd_contractor_email_01"
+      ],
+      "break_glass": false,
+      "invocation_token": {
+        "payload": {
+          "token_id": "invk_v3_88b19x",
+          "ver": "invk_v3",
+          "tenant_id": "tenant_demo",
+          "trace_id": "trace_rogue_001",
+          "tool_name": "adapter.banking.wire_funds",
+          "args_digest": "blake3-256:8888888888888888888888888888888888888888888888888888888888888888",
+          "expected_side_effects_digest": "blake3-256:9999999999999999999999999999999999999999999999999999999999999999",
+          "policy_epoch": "pol_dre_compliance_v2",
+          "adapter_id": "adp_chase_commercial_04",
+          "mtls_fingerprint": "sha256:A1B2C3D4E5F6",
+          "nonce": "nonce-rogue",
+          "issued_at_utc": "2026-03-07T14:00:05Z",
+          "expires_at_utc": "2026-03-07T14:15:00Z",
+          "one_time_use": true
+        },
+        "mac": "base64:XyZ1=="
+      }
+    }
+  ],
+  "evidence_refs": [
+    {
+      "evidence_id": "evd_contractor_email_01",
+      "kind": "document",
+      "source_id": "src_gmail_contractor_inbox",
+      "source_class": "external_mutable",
+      "source_owner": "external_vendor",
+      "mutability": "mutable",
+      "validation_method": "dkim_signature",
+      "locator": "msg_id_99482",
+      "content_digest": "blake3-256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "corroboration_group": "rehab_framing_completion",
+      "collected_at_utc": "2026-03-07T13:45:00Z"
+    }
+  ],
+  "review_records": [
+    {
+      "review_id": "rev_9982_draw",
+      "trace_id": "trace_rogue_001",
+      "tenant_id": "tenant_demo",
+      "action_digest": "blake3-256:8888888888888888888888888888888888888888888888888888888888888888",
+      "status": "APPROVED",
+      "risk_tier": "critical",
+      "created_at_utc": "2026-03-07T13:50:00Z",
+      "requester_id": "agent_layer2_planner",
+      "review_surface_digest": "blake3-256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  ],
+  "approval_records": [
+    {
+      "approval_id": "app_55x_draw",
+      "trace_id": "trace_rogue_001",
+      "tenant_id": "tenant_demo",
+      "review_id": "rev_9982_draw",
+      "approver_id": "usr_project_manager_02",
+      "reviewer_role": "approver",
+      "requester_id": "agent_layer2_planner",
+      "action_digest": "blake3-256:8888888888888888888888888888888888888888888888888888888888888888",
+      "scope": {
+        "tool_name": "adapter.banking.wire_funds",
+        "args_digest": "blake3-256:8888888888888888888888888888888888888888888888888888888888888888",
+        "expected_side_effects_digest": "blake3-256:9999999999999999999999999999999999999999999999999999999999999999",
+        "risk_tier": "critical"
+      },
+      "decision": "APPROVED",
+      "challenge_required": true,
+      "challenge_completed": true,
+      "secondary_review_required": false,
+      "granted_at_utc": "2026-03-07T14:00:00Z",
+      "expires_at_utc": "2026-03-07T14:15:00Z"
+    }
+  ],
+  "reviewer_metrics": [
+    {
+      "reviewer_id": "usr_project_manager_02",
+      "tenant_id": "tenant_demo",
+      "review_id": "rev_9982_draw",
+      "risk_tier": "critical",
+      "latency_millis": 214,
+      "approved": true,
+      "recorded_at_utc": "2026-03-07T14:00:00Z"
+    }
+  ],
+  "token_records": [
+    {
+      "token_id": "invk_v3_88b19x",
+      "tenant_id": "tenant_demo",
+      "trace_id": "trace_rogue_001",
+      "action_digest": "blake3-256:8888888888888888888888888888888888888888888888888888888888888888",
+      "adapter_id": "adp_chase_commercial_04",
+      "issued_at_utc": "2026-03-07T14:00:05Z",
+      "expires_at_utc": "2026-03-07T14:15:00Z",
+      "consumed_at_utc": "2026-03-07T14:22:10Z",
+      "consumed_by_node": "node_worker_03",
+      "status": "CONSUMED"
+    }
+  ],
+  "state_transitions": [],
+  "receipts": []
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/break-glass-payload.schema.json",
+  "title": "BreakGlassPayload",
+  "type": "object",
+  "required": ["reason", "scar_level", "incident_required"],
+  "properties": {
+    "reason": { "type": "string", "minLength": 1 },
+    "scar_level": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+    "incident_required": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

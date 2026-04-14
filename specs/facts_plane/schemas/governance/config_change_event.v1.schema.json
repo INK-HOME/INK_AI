@@ -1,0 +1,91 @@
+{
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/governance/config_change_event.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approvals": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "approver": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "attestation_digest": {
+            "$ref": "defs.common.schema.json#/$defs/b3_digest"
+          },
+          "role": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "approver",
+          "role",
+          "attestation_digest"
+        ],
+        "type": "object"
+      },
+      "maxItems": 50,
+      "type": "array"
+    },
+    "authority_tick": {
+      "$ref": "defs.common.schema.json#/$defs/authority_tick"
+    },
+    "canonical": {
+      "$ref": "defs.common.schema.json#/$defs/canonicalization"
+    },
+    "change_digest": {
+      "$ref": "defs.common.schema.json#/$defs/b3_digest"
+    },
+    "change_type": {
+      "enum": [
+        "POLICY_EPOCH_BUMP",
+        "SCHEMA_EPOCH_BUMP",
+        "MIGRATION_APPLIED",
+        "REVOCATION_PUBLISH",
+        "COMPENSATING_ACTION"
+      ],
+      "type": "string"
+    },
+    "event_id": {
+      "$ref": "defs.common.schema.json#/$defs/ulid"
+    },
+    "event_version": {
+      "const": "1.0",
+      "type": "string"
+    },
+    "issued_at": {
+      "$ref": "defs.common.schema.json#/$defs/iso_datetime"
+    },
+    "reason": {
+      "maxLength": 1024,
+      "minLength": 1,
+      "type": "string"
+    },
+    "signature": {
+      "$ref": "defs.common.schema.json#/$defs/ed25519_jws_compact_detached"
+    },
+    "tenant_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_version",
+    "event_id",
+    "issued_at",
+    "tenant_id",
+    "authority_tick",
+    "change_type",
+    "change_digest",
+    "reason",
+    "signature",
+    "canonical"
+  ],
+  "title": "Config Change Event v1 (governed config/policy/migration changes)",
+  "type": "object"
+}

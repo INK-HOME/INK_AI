@@ -1,0 +1,27 @@
+{
+  "authority_clock": {
+    "domain": "mai",
+    "domain_tick": 200001
+  },
+  "decision_id": "dec_0100",
+  "governance": {
+    "policy_digest": "blake3:5ce448cf24ebc5da55ad37458a2eb278bff2c9dd4abce5b3ad7352f76bab25d5",
+    "policy_epoch": 42,
+    "schema_pack_digest": "blake3:d0292703c96289666ba1324e1d3c3053767fbc527582797995b230ff8e48603e"
+  },
+  "prev_digest": "blake3:a5e891c8e2911ed25e999d5a6dd1f519a3fb0df2d02d906ac2e56bb5a027e86b",
+  "record_type": "RESERVED",
+  "request": {
+    "args_digest": "blake3:7a704b70c313523a8d65b9e39f5dd0470ef180735694d710ee01bfd36dd6cfb7",
+    "idempotency_key": "idem_0100",
+    "preimage_digest": "blake3:104252b4dacaab3355c5aed942fbe43f00d2c8a24a547e5a175a72e1b4d4bf13",
+    "tool_name": "payments.transfer"
+  },
+  "self_digest": "blake3:f2d697eac504bb7a5ffa5a12695de6daeba8fd64246c24933674f5acb8ccff95",
+  "seq": 1,
+  "tool": {
+    "tool_class": "transactional"
+  },
+  "wal_version": "1.0",
+  "written_at": "2026-02-13T06:03:02+00:00"
+}

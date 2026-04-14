@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/hard-boundary-spec/v1",
+  "title": "HardBoundarySpec v1",
+  "description": "Machine-readable declaration of a dot.ink hard boundary configuration: what egress is permitted, which principals may use credentials, and where secrets live. This document is SHA-256 hashed and its digest is bound into every DecisionReceipt as hard_boundary_digest. The hash binds decisions to the exact boundary in force when they were made. A changed boundary (new allowed_cidrs, new secrets_provider, etc.) produces a different digest, which the verifier detects. STRICT allOf rules reject obviously insecure configurations at parse time.",
+
+  "type": "object",
+  "required": ["boundary_version", "profile", "egress", "identity", "secrets"],
+  "additionalProperties": false,
+
+  "properties": {
+    "boundary_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:[-+][0-9A-Za-z.-]+)?$",
+      "description": "SemVer for this boundary specification. Increment on any change. Old versions remain valid for verifying historical receipts."
+    },
+
+    "profile": {
+      "type": "string",
+      "enum": ["DEV", "ENTERPRISE", "STRICT"],
+      "description": "Deployment profile this boundary applies to."
+    },
+
+    "issued_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "When this boundary spec was created."
+    },
+
+    "egress": {
+      "type": "object",
+      "description": "Network egress controls. STRICT requires default_deny=true.",
+      "required": ["default_deny", "allowed_hostnames", "allowed_cidrs", "dns"],
+      "additionalProperties": false,
+      "properties": {
+        "default_deny": {
+          "type": "boolean",
+          "description": "All outbound traffic denied unless in allowed_hostnames or allowed_cidrs. Must be true in ENTERPRISE and STRICT."
+        },
+        "allowed_hostnames": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 3 },
+          "description": "Explicit allowlist of hostnames reachable from agent workloads. dot.ink gateway endpoint must be here."
+        },
+        "allowed_cidrs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$|^[0-9a-fA-F:]+/[0-9]{1,3}$"
+          },
+          "description": "CIDR blocks reachable from agent workloads (e.g. VPC CIDR for dot.ink gateway)."
+        },
+        "dns": {
+          "type": "object",
+          "description": "DNS resolver controls. Uncontrolled DNS allows exfil via DNS tunnel and hostname rebinding.",
+          "required": ["enforce_controlled_resolver", "allow_external_dns", "resolver_ips"],
+          "additionalProperties": false,
+          "properties": {
+            "enforce_controlled_resolver": {
+              "type": "boolean",
+              "description": "Agent workloads may only query the controlled resolver(s) in resolver_ips."
+            },
+            "allow_external_dns": {
+              "type": "boolean",
+              "description": "If true, workloads may query 8.8.8.8 or similar. Must be false in STRICT."
+            },
+            "resolver_ips": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 7 },
+              "description": "IP addresses of the controlled DNS resolver(s)."
+            }
+          }
+        }
+      }
+    },
+
+    "identity": {
+      "type": "object",
+      "description": "Identity and access controls. STRICT requires workload identity and no direct tool access.",
+      "required": ["workload_identity_required", "gateway_principal", "tool_access"],
+      "additionalProperties": false,
+      "properties": {
+        "workload_identity_required": {
+          "type": "boolean",
+          "description": "Agent workloads must present a workload identity (IRSA, Workload Identity, SPIFFE) — no static API keys in workloads."
+        },
+        "gateway_principal": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 256,
+          "description": "IAM principal that the dot.ink gateway presents to tool/provider APIs (e.g. ARN, service account). Only this principal may decrypt secrets and call adapters."
+        },
+        "tool_access": {
+          "type": "object",
+          "description": "Controls for workload-to-tool and gateway-to-adapter communication paths.",
+          "required": [
+            "deny_direct_tool_access_from_workloads",
+            "require_mtls_workload_to_gateway",
+            "require_mtls_gateway_to_adapters"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "deny_direct_tool_access_from_workloads": {
+              "type": "boolean",
+              "description": "IAM policy denies all tool/provider API calls from workload identity — only gateway_principal may call them. Must be true in STRICT."
+            },
+            "require_mtls_workload_to_gateway": {
+              "type": "boolean",
+              "description": "mTLS required on the workload → gateway path. Prevents unauthenticated bypass even if egress filter is misconfigured."
+            },
+            "require_mtls_gateway_to_adapters": {
+              "type": "boolean",
+              "description": "mTLS required on the gateway → adapter path. Must be true in STRICT."
+            },
+            "sidecar_interceptor_deployed": {
+              "type": "boolean",
+              "description": "Pattern 2 sidecar proxy deployed. If true, P2_SIDECAR_TOKEN_ENFORCEMENT test is mandatory in boundary validation."
+            }
+          }
+        }
+      }
+    },
+
+    "secrets": {
+      "type": "object",
+      "description": "Secrets management controls. STRICT prohibits any secret in workload env/volumes.",
+      "required": ["secrets_provider", "keys_in_workloads_forbidden", "decrypt_allowed_principals", "rotation"],
+      "additionalProperties": false,
+      "properties": {
+        "secrets_provider": {
+          "type": "string",
+          "enum": ["KMS", "VAULT", "SECRETS_MANAGER", "NONE_DEV_ONLY"],
+          "description": "Where secrets are stored. NONE_DEV_ONLY is rejected in STRICT by allOf rule."
+        },
+        "keys_in_workloads_forbidden": {
+          "type": "boolean",
+          "description": "No API keys, signing keys, or credentials are injected into workload env vars, volumes, or metadata. Must be true in STRICT."
+        },
+        "decrypt_allowed_principals": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 },
+          "description": "IAM principals permitted to decrypt secrets. Should match gateway_principal only in STRICT."
+        },
+        "rotation": {
+          "type": "object",
+          "required": ["required", "max_key_age_days"],
+          "additionalProperties": false,
+          "properties": {
+            "required": {
+              "type": "boolean",
+              "description": "Key rotation is enforced (automated or procedural)."
+            },
+            "max_key_age_days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "description": "Maximum permitted age of any secret in days. 90 for ENTERPRISE, 30 for STRICT."
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "allOf": [
+    {
+      "description": "STRICT: egress default_deny must be true.",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "properties": {
+          "egress": {
+            "properties": { "default_deny": { "const": true } },
+            "required": ["default_deny"]
+          },
+          "identity": {
+            "properties": { "workload_identity_required": { "const": true } },
+            "required": ["workload_identity_required"]
+          },
+          "secrets": {
+            "properties": {
+              "keys_in_workloads_forbidden": { "const": true },
+              "secrets_provider": { "enum": ["KMS", "VAULT", "SECRETS_MANAGER"] }
+            },
+            "required": ["keys_in_workloads_forbidden", "secrets_provider"]
+          }
+        }
+      }
+    },
+    {
+      "description": "STRICT: external DNS must be disabled.",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "properties": {
+          "egress": {
+            "properties": {
+              "dns": {
+                "properties": { "allow_external_dns": { "const": false } },
+                "required": ["allow_external_dns"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "STRICT: direct tool access from workloads must be denied.",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "properties": {
+          "identity": {
+            "properties": {
+              "tool_access": {
+                "properties": { "deny_direct_tool_access_from_workloads": { "const": true } },
+                "required": ["deny_direct_tool_access_from_workloads"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "ENTERPRISE: default_deny required (not just STRICT).",
+      "if": {
+        "properties": { "profile": { "const": "ENTERPRISE" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "properties": {
+          "egress": {
+            "properties": { "default_deny": { "const": true } },
+            "required": ["default_deny"]
+          },
+          "secrets": {
+            "properties": {
+              "keys_in_workloads_forbidden": { "const": true },
+              "secrets_provider": { "enum": ["KMS", "VAULT", "SECRETS_MANAGER"] }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

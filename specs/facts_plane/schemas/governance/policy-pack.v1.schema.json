@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/policy-pack/v1",
+  "title": "dot.ink Policy Pack",
+  "description": "Governance policy loaded via POLICY_PATH (bridge) or POST /v1/policy/load (enterprise). Epoch must strictly increase on each load \u2014 rollbacks are rejected.",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "epoch",
+    "industry",
+    "invariants",
+    "review_thresholds"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "epoch": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string",
+      "enum": [
+        "finance",
+        "healthcare",
+        "legal",
+        "general"
+      ]
+    },
+    "invariants": {
+      "type": "array",
+      "description": "Hard-block rules. Any violation at severity\u22652 blocks the intent; severity=3 also sets the INTERLOCK.",
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "left_operand",
+          "operator",
+          "right_operand",
+          "severity"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "left_operand": {
+            "type": "string",
+            "description": "Field name from the agent payload"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "gt",
+              "lt",
+              "gte",
+              "lte",
+              "eq",
+              "neq",
+              "in",
+              "not_in",
+              "is_true",
+              "is_false"
+            ]
+          },
+          "right_operand": {
+            "description": "Threshold value or list (for in/not_in)"
+          },
+          "severity": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "description": "1=log, 2=block, 3=block+interlock"
+          }
+        }
+      }
+    },
+    "review_thresholds": {
+      "type": "array",
+      "description": "Soft rules that route the intent to human review instead of blocking outright.",
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "left_operand",
+          "operator",
+          "right_operand"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "left_operand": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "gt",
+              "lt",
+              "gte",
+              "lte",
+              "eq",
+              "neq",
+              "in",
+              "not_in",
+              "is_true",
+              "is_false"
+            ]
+          },
+          "right_operand": {}
+        }
+      }
+    }
+  }
+}

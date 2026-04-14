@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/neutral-review-surface.schema.json",
+  "title": "NeutralReviewSurface",
+  "type": "object",
+  "required": [
+    "review_id",
+    "action_digest",
+    "tool_name",
+    "args_digest",
+    "expected_state_delta",
+    "risk_flags",
+    "generated_by",
+    "generated_at_utc"
+  ],
+  "properties": {
+    "review_id": { "type": "string", "minLength": 1 },
+    "action_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "tool_name": { "type": "string", "minLength": 1 },
+    "args_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "expected_state_delta": { "type": "object" },
+    "risk_flags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "generated_by": { "type": "string", "minLength": 1 },
+    "generated_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" }
+  },
+  "additionalProperties": false
+}

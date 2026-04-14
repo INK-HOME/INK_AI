@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "control-envelope.v1.schema.json",
+  "title": "ControlEnvelope",
+  "type": "object",
+  "required": [
+    "tenant_id",
+    "trace_id",
+    "tool_name",
+    "args_digest",
+    "promotion_ok"
+  ],
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "tool_name": {
+      "type": "string"
+    },
+    "args_digest": {
+      "type": "string"
+    },
+    "review_required": {
+      "type": "boolean"
+    },
+    "challenge_completed": {
+      "type": "boolean"
+    },
+    "promotion_ok": {
+      "type": "boolean"
+    },
+    "break_glass": {
+      "type": "boolean"
+    },
+    "incident_id": {
+      "type": "string"
+    },
+    "invocation_token": {
+      "$ref": "invocation-token.v1.schema.json"
+    },
+    "review_id": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "review_surface": {
+      "type": "object"
+    },
+    "risk_tier": {
+      "type": "string"
+    },
+    "adapter_id": {
+      "type": "string"
+    },
+    "mtls_fingerprint": {
+      "type": "string"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "break_glass_session_id": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

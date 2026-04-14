@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/saga-definition/v1",
+  "title": "dot.ink Saga Definition",
+  "description": "Multi-step saga submitted via POST /v1/saga. Each step declares both a forward action and a compensation. Steps with review-triggering payloads are rejected at submission time.",
+  "type": "object",
+  "required": [
+    "agent_id",
+    "steps"
+  ],
+  "properties": {
+    "saga_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Client-supplied ID for idempotent re-submission"
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "step_id",
+          "action",
+          "compensation"
+        ],
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "action": {
+            "type": "object",
+            "description": "Intent payload for the forward step"
+          },
+          "compensation": {
+            "type": "object",
+            "description": "Intent payload to undo this step if a later step fails"
+          },
+          "comp_description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/policy-decision.schema.json",
+  "title": "PolicyDecision",
+  "type": "object",
+  "required": [
+    "decision_id",
+    "trace_id",
+    "tenant_id",
+    "subject",
+    "resource",
+    "action",
+    "decision",
+    "reason_codes",
+    "policy_pack_digest",
+    "input_digest",
+    "evaluated_at_utc"
+  ],
+  "properties": {
+    "decision_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "subject": { "type": "string", "minLength": 1 },
+    "resource": { "type": "string", "minLength": 1 },
+    "action": { "type": "string", "minLength": 1 },
+    "decision": { "type": "string", "enum": ["ALLOW", "DENY", "STAGE", "ESCALATE"] },
+    "reason_codes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "policy_pack_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "input_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "evidence_bundle_digest": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    },
+    "budget_check": {
+      "type": "object",
+      "properties": {
+        "token_budget_ok": { "type": "boolean" },
+        "tool_budget_ok": { "type": "boolean" },
+        "risk_budget_ok": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "evaluated_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" }
+  },
+  "additionalProperties": false
+}

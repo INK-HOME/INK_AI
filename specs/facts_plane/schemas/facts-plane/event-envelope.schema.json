@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/event-envelope.schema.json",
+  "title": "EventEnvelope",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_type",
+    "tenant_id",
+    "trace_id",
+    "causal_seq",
+    "observed_at_utc",
+    "actor",
+    "payload",
+    "prev_digest",
+    "classification",
+    "self_digest"
+  ],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_type": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "parent_event_id": { "type": ["string", "null"] },
+    "causal_seq": { "type": "integer", "minimum": 1 },
+    "observed_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" },
+    "actor": { "$ref": "common.schema.json#/$defs/ActorRef" },
+    "payload": { "type": "object" },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "$ref": "evidence-ref.schema.json" }
+    },
+    "prev_digest": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    },
+    "classification": { "type": "string", "enum": ["public", "internal", "restricted", "secret"] },
+    "self_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "signatures": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/Signature" }
+    }
+  },
+  "additionalProperties": false
+}

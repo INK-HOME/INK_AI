@@ -1,0 +1,43 @@
+{
+  "authority_clock": {
+    "domain": "mai",
+    "domain_tick": 100123
+  },
+  "decision_id": "dec_0003",
+  "evidence": {
+    "completeness_digest": "blake3:fe82a9d26d863251a91898e26893500bc917ed4c7b61e9179522da08906eb4a2",
+    "wal_digest": "blake3:006d2e2a9a855b296f3967e32fabe256eefe2ae830421ee3c51c9585ec58d3f2"
+  },
+  "governance": {
+    "policy_digest": "blake3:5ce448cf24ebc5da55ad37458a2eb278bff2c9dd4abce5b3ad7352f76bab25d5",
+    "policy_epoch": 42,
+    "schema_pack_digest": "blake3:d0292703c96289666ba1324e1d3c3053767fbc527582797995b230ff8e48603e"
+  },
+  "issued_at": "2026-02-13T06:03:02+00:00",
+  "outcome": {
+    "error_code": "ADAPTER_TIMEOUT",
+    "error_digest": "blake3:d991b66aa44bcbe5ad5e893b42c20b73f4e1c7c09d9e9f25ec41a51d04d8bc7d",
+    "status": "ERROR"
+  },
+  "receipt_id": "rcpt_0003",
+  "receipt_version": "2.0",
+  "request": {
+    "args_digest": "blake3:e33a49bd7491f4000d69f1ab3db2fc90163be46ef1d7e8a4847847fe532f1614",
+    "idempotency_key": "idem_0001",
+    "preimage_digest": "blake3:e489562dc5688bfbdf895faec8e98de142fa46beffd987d8440b39048f830880",
+    "tool_name": "payments.transfer"
+  },
+  "signature": {
+    "alg": "EdDSA",
+    "canonicalization": {
+      "hash_alg": "BLAKE3-256",
+      "hash_format": "blake3:<64hex>",
+      "jcs_rfc8785": true,
+      "jws_compact_detached": true,
+      "signing_alg": "EdDSA",
+      "signing_curve": "Ed25519"
+    },
+    "jws_detached": "9i9AXcyKHfHfHae61_z3TfPI..QiyO9PeqiWaMxEsUCstzVbQq6H0H_ry2MtrE8_e7FljVgZpKBFg7orSDOW_MCVe-hEKKtM5kZWMh7dMTuSMt4w",
+    "kid": "mai-root-001"
+  }
+}

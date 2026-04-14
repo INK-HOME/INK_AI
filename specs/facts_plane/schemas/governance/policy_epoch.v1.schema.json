@@ -1,0 +1,41 @@
+{
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/governance/policy_epoch.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "activated_at": {
+      "$ref": "defs.common.schema.json#/$defs/iso_datetime"
+    },
+    "canonical": {
+      "$ref": "defs.common.schema.json#/$defs/canonicalization"
+    },
+    "digest": {
+      "$ref": "defs.common.schema.json#/$defs/b3_digest"
+    },
+    "policy_epoch": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "policy_epoch_version": {
+      "const": "1.0",
+      "type": "string"
+    },
+    "signature": {
+      "$ref": "defs.common.schema.json#/$defs/ed25519_jws_compact_detached"
+    },
+    "signing_kid": {
+      "$ref": "defs.common.schema.json#/$defs/kid"
+    }
+  },
+  "required": [
+    "policy_epoch_version",
+    "policy_epoch",
+    "digest",
+    "activated_at",
+    "signing_kid",
+    "signature",
+    "canonical"
+  ],
+  "title": "Policy Epoch Registry Entry v1",
+  "type": "object"
+}

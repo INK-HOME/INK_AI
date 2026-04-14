@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/approval-record.schema.json",
+  "title": "ApprovalRecord",
+  "type": "object",
+  "required": [
+    "approval_id",
+    "trace_id",
+    "tenant_id",
+    "approver_id",
+    "requester_id",
+    "scope",
+    "action_digest",
+    "decision",
+    "granted_at_utc",
+    "expires_at_utc"
+  ],
+  "properties": {
+    "approval_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "approver_id": { "type": "string", "minLength": 1 },
+    "requester_id": { "type": "string", "minLength": 1 },
+    "scope": {
+      "type": "object",
+      "required": ["tool_name", "args_digest"],
+      "properties": {
+        "tool_name": { "type": "string", "minLength": 1 },
+        "args_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+        "expected_side_effects_digest": {
+          "anyOf": [
+            { "$ref": "common.schema.json#/$defs/DigestString" },
+            { "type": "null" }
+          ]
+        },
+        "risk_tier": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "action_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "decision": { "type": "string", "enum": ["APPROVED", "REJECTED"] },
+    "justification": { "type": ["string", "null"] },
+    "challenge_required": { "type": "boolean" },
+    "granted_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" },
+    "expires_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" }
+  },
+  "additionalProperties": false
+}

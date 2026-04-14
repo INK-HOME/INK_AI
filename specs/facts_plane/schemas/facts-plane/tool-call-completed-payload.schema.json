@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/tool-call-completed-payload.schema.json",
+  "title": "ToolCallCompletedPayload",
+  "type": "object",
+  "required": ["result_digest"],
+  "properties": {
+    "result_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "provider_receipt_digest": {
+      "anyOf": [
+        { "$ref": "common.schema.json#/$defs/DigestString" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

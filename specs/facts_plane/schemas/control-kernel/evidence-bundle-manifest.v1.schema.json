@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/evidence-bundle-manifest/v1",
+  "title": "EvidenceBundleManifest v1",
+  "description": "Manifest of all artifacts that constitute a complete evidence bundle for a given decision or audit period. Each leaf has a type, reference (URI/path), and content digest. The manifest itself is SHA-256 hashed; the resulting digest is bound into DecisionReceipt.evidence_bundle_manifest_digest. STRICT deployments require all mandatory_leaf_types to be present with digests. Auditors can verify completeness and integrity without re-running the server by: (1) checking all required leaf types are present, (2) fetching each artifact, (3) comparing its sha256 to the stored digest.",
+
+  "type": "object",
+  "required": ["manifest_id", "decision_id", "profile", "created_at", "leaves"],
+  "additionalProperties": false,
+
+  "properties": {
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$",
+      "description": "The decision_id from DecisionReceipt this manifest covers. May also be a period identifier (e.g. audit-2026-Q1) for period bundles."
+    },
+
+    "profile": {
+      "type": "string",
+      "enum": ["DEV", "ENTERPRISE", "STRICT"]
+    },
+
+    "created_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+
+    "audit_chain_seq_range": {
+      "type": "object",
+      "description": "The chain_seq range this bundle covers.",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "type": "integer", "minimum": 1 },
+        "max": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "leaves": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of all artifacts in this bundle.",
+      "items": {
+        "type": "object",
+        "required": ["leaf_id", "kind", "ref"],
+        "additionalProperties": false,
+        "properties": {
+          "leaf_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this leaf within the manifest."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "INTENT_RECEIPT",
+              "DECISION_RECEIPT_APLUS",
+              "BREAK_GLASS_RECEIPT",
+              "CONFIG_CHANGE_RECEIPT",
+              "SAGA_RECEIPT",
+              "HARD_BOUNDARY_SPEC",
+              "HARD_BOUNDARY_VALIDATION_RESULT",
+              "NETWORK_FLOW_LOG_SLICE",
+              "FIREWALL_DENY_EVENT",
+              "DNS_DENY_EVENT",
+              "IAM_AUDIT_EVENT_SLICE",
+              "MTLS_AUTHZ_DECISION_LOG",
+              "VERIFIER_RUN_REPORT",
+              "AUDIT_CHAIN_SLICE",
+              "COLD_BUNDLE_MANIFEST",
+              "COMPLETENESS_LEDGER_SNAPSHOT",
+              "POLICY_PACK",
+              "SCHEMA_REGISTRY"
+            ],
+            "description": "Artifact type. Verifier enforces that all mandatory kinds for the profile are present."
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "description": "URI, S3 path, local path, or opaque artifact identifier."
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 content digest of the artifact. Required in STRICT for all leaves."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "mandatory": {
+            "type": "boolean",
+            "description": "True if this leaf is required by the verifier rules for the bundle's profile."
+          }
+        }
+      }
+    },
+
+    "missing_leaves": {
+      "type": "array",
+      "description": "Leaf kinds declared as mandatory by verifier-rules.v3.json but not yet collected. Populated by the bundle assembler; must be empty for a STRICT bundle to pass verification.",
+      "items": { "type": "string" }
+    }
+  },
+
+  "allOf": [
+    {
+      "description": "STRICT: missing_leaves must be empty (no mandatory artifact missing).",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "properties": {
+          "missing_leaves": {
+            "type": "array",
+            "maxItems": 0
+          }
+        },
+        "required": ["missing_leaves"]
+      }
+    },
+    {
+      "description": "STRICT: every leaf must have a digest.",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "properties": {
+          "leaves": {
+            "items": { "required": ["digest"] }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "bundle_id": "bndl_happy_001",
+  "trace_id": "trace_happy_001",
+  "tenant_id": "tenant_demo",
+  "verification_report": {
+    "status": "UNVERIFIED_PENDING_RUN",
+    "generated_by": "fp-export-node"
+  },
+  "control_envelopes": [
+    {
+      "trace_id": "trace_happy_001",
+      "tenant_id": "tenant_demo",
+      "risk_tier": "high",
+      "tool_name": "payments.transfer",
+      "args_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+      "expected_side_effects_digest": "blake3-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "policy_epoch": "2026-03-01",
+      "review_required": true,
+      "adapter_id": "payments-v2",
+      "mtls_fingerprint": "sha256:deadbeef",
+      "evidence_refs": [
+        "ev_1",
+        "ev_2"
+      ],
+      "break_glass": false,
+      "invocation_token": {
+        "payload": {
+          "token_id": "tok_happy_001",
+          "ver": "invk_v3",
+          "tenant_id": "tenant_demo",
+          "trace_id": "trace_happy_001",
+          "tool_name": "payments.transfer",
+          "args_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+          "expected_side_effects_digest": "blake3-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "policy_epoch": "2026-03-01",
+          "adapter_id": "payments-v2",
+          "mtls_fingerprint": "sha256:deadbeef",
+          "nonce": "nonce-1",
+          "issued_at_utc": "2026-03-08T10:00:00Z",
+          "expires_at_utc": "2026-03-08T10:15:00Z",
+          "one_time_use": true
+        },
+        "mac": "base64:abc123=="
+      }
+    }
+  ],
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_1",
+      "kind": "document",
+      "source_id": "src_permit",
+      "source_class": "primary_verified",
+      "source_owner": "municipal_permits",
+      "mutability": "versioned",
+      "validation_method": "witness_proxy",
+      "locator": "permit:123",
+      "content_digest": "blake3-256:1111111111111111111111111111111111111111111111111111111111111111",
+      "corroboration_group": "draw_release",
+      "snapshot_digest": "blake3-256:2222222222222222222222222222222222222222222222222222222222222222",
+      "etag": "permit-etag-1",
+      "collected_at_utc": "2026-03-08T09:50:00Z"
+    },
+    {
+      "evidence_id": "ev_2",
+      "kind": "document",
+      "source_id": "src_inspector_report",
+      "source_class": "primary_verified",
+      "source_owner": "licensed_inspector",
+      "mutability": "versioned",
+      "validation_method": "witness_proxy",
+      "locator": "report:55",
+      "content_digest": "blake3-256:3333333333333333333333333333333333333333333333333333333333333333",
+      "corroboration_group": "draw_release",
+      "snapshot_digest": "blake3-256:4444444444444444444444444444444444444444444444444444444444444444",
+      "etag": "report-etag-1",
+      "collected_at_utc": "2026-03-08T09:55:00Z"
+    }
+  ],
+  "review_records": [
+    {
+      "review_id": "rev_happy_001",
+      "trace_id": "trace_happy_001",
+      "tenant_id": "tenant_demo",
+      "action_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+      "status": "APPROVED",
+      "risk_tier": "high",
+      "created_at_utc": "2026-03-08T09:58:00Z",
+      "requester_id": "agent_1",
+      "review_surface_digest": "blake3-256:5555555555555555555555555555555555555555555555555555555555555555"
+    }
+  ],
+  "approval_records": [
+    {
+      "approval_id": "app_happy_001",
+      "trace_id": "trace_happy_001",
+      "tenant_id": "tenant_demo",
+      "review_id": "rev_happy_001",
+      "approver_id": "user_mgr_1",
+      "reviewer_role": "approver",
+      "requester_id": "agent_1",
+      "action_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+      "scope": {
+        "tool_name": "payments.transfer",
+        "args_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+        "expected_side_effects_digest": "blake3-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "risk_tier": "high"
+      },
+      "decision": "APPROVED",
+      "challenge_required": true,
+      "challenge_completed": true,
+      "secondary_review_required": false,
+      "granted_at_utc": "2026-03-08T10:00:00Z",
+      "expires_at_utc": "2026-03-08T10:15:00Z"
+    }
+  ],
+  "reviewer_metrics": [
+    {
+      "reviewer_id": "user_mgr_1",
+      "tenant_id": "tenant_demo",
+      "review_id": "rev_happy_001",
+      "risk_tier": "high",
+      "latency_millis": 6200,
+      "approved": true,
+      "recorded_at_utc": "2026-03-08T10:00:00Z"
+    }
+  ],
+  "token_records": [
+    {
+      "token_id": "tok_happy_001",
+      "tenant_id": "tenant_demo",
+      "trace_id": "trace_happy_001",
+      "action_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+      "adapter_id": "payments-v2",
+      "issued_at_utc": "2026-03-08T10:00:00Z",
+      "expires_at_utc": "2026-03-08T10:15:00Z",
+      "consumed_at_utc": "2026-03-08T10:05:00Z",
+      "consumed_by_node": "node-1",
+      "status": "CONSUMED"
+    }
+  ],
+  "state_transitions": [
+    {
+      "entity_id": "trace_happy_001",
+      "trace_id": "trace_happy_001",
+      "tenant_id": "tenant_demo",
+      "from_state": "PENDING_REVIEW",
+      "to_state": "APPROVED",
+      "reason_code": "review_approved",
+      "committed_at_utc": "2026-03-08T10:00:00Z"
+    },
+    {
+      "entity_id": "trace_happy_001",
+      "trace_id": "trace_happy_001",
+      "tenant_id": "tenant_demo",
+      "from_state": "APPROVED",
+      "to_state": "STARTED",
+      "reason_code": "execution_initiated",
+      "committed_at_utc": "2026-03-08T10:04:50Z"
+    },
+    {
+      "entity_id": "trace_happy_001",
+      "trace_id": "trace_happy_001",
+      "tenant_id": "tenant_demo",
+      "from_state": "STARTED",
+      "to_state": "COMPLETED",
+      "reason_code": "provider_success",
+      "committed_at_utc": "2026-03-08T10:05:00Z"
+    }
+  ],
+  "receipts": [
+    {
+      "receipt_id": "rcpt_happy_001",
+      "trace_id": "trace_happy_001",
+      "tenant_id": "tenant_demo",
+      "root_digest": "blake3-256:6666666666666666666666666666666666666666666666666666666666666666",
+      "sealed_at_utc": "2026-03-08T10:05:01Z"
+    }
+  ]
+}

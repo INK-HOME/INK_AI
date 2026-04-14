@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/hard-boundary-validation/v1",
+  "title": "HardBoundaryValidationResult v1",
+  "description": "Structured, hash-bound record of the bypass acceptance tests (A–F + P2) defined in ERA v3 slide 6 and the Sidecar Interceptor slide. Written to the audit chain on every validation run. The offline verifier checks that every STRICT-profile deployment has a PASS result for all mandatory tests before accepting an evidence bundle as complete.",
+
+  "type": "object",
+  "required": [
+    "validation_id",
+    "tenant_id",
+    "profile",
+    "observed_at",
+    "boundary",
+    "tests",
+    "audit_chain_seq",
+    "prev_digest",
+    "audit_digest"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+    "kind": {
+      "type": "string",
+      "const": "HARD_BOUNDARY_VALIDATION",
+      "description": "Record kind. Fixed value so the verifier can index these records."
+    },
+
+    "validation_id": {
+      "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/uuid",
+      "description": "Unique ID for this validation run. Referenced in DecisionReceipt.hard_boundary.validation_id."
+    },
+
+    "tenant_id": {
+      "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/nonEmptyString"
+    },
+
+    "profile": {
+      "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/profile"
+    },
+
+    "observed_at": {
+      "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/iso8601"
+    },
+
+    "boundary": {
+      "type": "object",
+      "description": "Version and digest of the HardBoundarySpec that was validated against.",
+      "required": ["boundary_version", "boundary_digest"],
+      "additionalProperties": false,
+      "properties": {
+        "boundary_version": { "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/semver" },
+        "boundary_digest":  { "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest" }
+      }
+    },
+
+    "tests": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Results for each bypass acceptance test. STRICT profile requires all mandatory tests to be PASS.",
+      "items": {
+        "type": "object",
+        "required": ["test_id", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "test_id": {
+            "type": "string",
+            "enum": [
+              "A_PROVIDER_BYPASS",
+              "B_TOOL_BYPASS",
+              "C_CREDENTIAL_EXFIL",
+              "D_GATEWAY_ONLY_ADAPTER",
+              "E_POLICY_REFUSAL",
+              "F_EVIDENCE_INTEGRITY",
+              "P2_SIDECAR_TOKEN_ENFORCEMENT"
+            ],
+            "description": "A–F from ERA v3 slide 6. P2 = Pattern 2 sidecar interceptor acceptance test (optional for ENTERPRISE, mandatory for STRICT+sidecar)."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "SKIPPED"],
+            "description": "SKIPPED is only permitted for P2 on non-sidecar deployments (must be documented in details)."
+          },
+          "layer": {
+            "type": "string",
+            "enum": ["Network", "IAM", "Secrets", "Policy", "Evidence", "Network+IAM", "IAM+Mesh"],
+            "description": "Enforcement layer(s) the test exercises, matching ERA v3 acceptance test table."
+          },
+          "details": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Human-readable notes: what was attempted, observed result, log reference."
+          },
+          "evidence_refs": {
+            "type": "array",
+            "description": "Machine-verifiable pointers to the evidence artifacts that demonstrate PASS.",
+            "items": {
+              "type": "object",
+              "required": ["kind", "ref"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/evidenceLeafType"
+                },
+                "ref": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "description": "URI, path, or opaque identifier for the evidence artifact."
+                },
+                "digest": {
+                  "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest",
+                  "description": "Content digest of the evidence artifact. If present, verifier confirms the artifact hasn't been tampered with."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "addendum": {
+      "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/hard-boundary-addendum/v1",
+      "description": "Optional inline addendum (assumptions + supply chain). If omitted, the addendum must be referenced separately."
+    },
+
+    "addendum_digest": {
+      "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest",
+      "description": "Digest of the addendum document if stored separately. Required in STRICT if addendum is not inlined."
+    },
+
+    "audit_chain_seq":   { "type": "integer", "minimum": 1 },
+    "prev_digest":       { "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest" },
+    "audit_digest":      { "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest" }
+  },
+
+  "allOf": [
+    {
+      "description": "STRICT profile: all tests A–F must be PASS or FAIL (not SKIPPED). P2 may be SKIPPED if documented.",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "properties": {
+          "tests": {
+            "contains": {
+              "properties": {
+                "test_id": { "const": "A_PROVIDER_BYPASS" },
+                "status":  { "enum": ["PASS", "FAIL"] }
+              },
+              "required": ["test_id", "status"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "STRICT profile: addendum or addendum_digest required.",
+      "if": {
+        "properties": { "profile": { "const": "STRICT" } },
+        "required": ["profile"]
+      },
+      "then": {
+        "anyOf": [
+          { "required": ["addendum"] },
+          { "required": ["addendum_digest"] }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "bundle_id": "bndl_indoubt_001",
+  "trace_id": "trace_indoubt_001",
+  "tenant_id": "tenant_demo",
+  "verification_report": {
+    "status": "UNVERIFIED_PENDING_RUN",
+    "generated_by": "fp-export-node"
+  },
+  "control_envelopes": [
+    {
+      "trace_id": "trace_indoubt_001",
+      "tenant_id": "tenant_demo",
+      "risk_tier": "high",
+      "tool_name": "payments.transfer",
+      "args_digest": "blake3-256:7777777777777777777777777777777777777777777777777777777777777777",
+      "expected_side_effects_digest": "blake3-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "policy_epoch": "2026-03-01",
+      "review_required": true,
+      "adapter_id": "payments-v2",
+      "mtls_fingerprint": "sha256:deadbeef",
+      "evidence_refs": [
+        "ev_1",
+        "ev_2"
+      ],
+      "break_glass": false
+    }
+  ],
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_1",
+      "kind": "document",
+      "source_id": "src_a",
+      "source_class": "primary_verified",
+      "source_owner": "owner_a",
+      "mutability": "versioned",
+      "validation_method": "witness_proxy",
+      "locator": "a",
+      "content_digest": "blake3-256:1111111111111111111111111111111111111111111111111111111111111111",
+      "corroboration_group": "grp",
+      "snapshot_digest": "blake3-256:2222222222222222222222222222222222222222222222222222222222222222",
+      "etag": "a1",
+      "collected_at_utc": "2026-03-08T09:00:00Z"
+    },
+    {
+      "evidence_id": "ev_2",
+      "kind": "document",
+      "source_id": "src_b",
+      "source_class": "primary_verified",
+      "source_owner": "owner_b",
+      "mutability": "versioned",
+      "validation_method": "witness_proxy",
+      "locator": "b",
+      "content_digest": "blake3-256:3333333333333333333333333333333333333333333333333333333333333333",
+      "corroboration_group": "grp",
+      "snapshot_digest": "blake3-256:4444444444444444444444444444444444444444444444444444444444444444",
+      "etag": "b1",
+      "collected_at_utc": "2026-03-08T09:01:00Z"
+    }
+  ],
+  "review_records": [],
+  "approval_records": [],
+  "reviewer_metrics": [],
+  "token_records": [],
+  "state_transitions": [
+    {
+      "entity_id": "trace_indoubt_001",
+      "trace_id": "trace_indoubt_001",
+      "tenant_id": "tenant_demo",
+      "from_state": "STARTED",
+      "to_state": "IN_DOUBT",
+      "reason_code": "provider_ambiguous",
+      "committed_at_utc": "2026-03-08T10:01:00Z"
+    },
+    {
+      "entity_id": "trace_indoubt_001",
+      "trace_id": "trace_indoubt_001",
+      "tenant_id": "tenant_demo",
+      "from_state": "IN_DOUBT",
+      "to_state": "RECONCILE_PENDING",
+      "reason_code": "awaiting_readback",
+      "committed_at_utc": "2026-03-08T10:01:02Z"
+    },
+    {
+      "entity_id": "trace_indoubt_001",
+      "trace_id": "trace_indoubt_001",
+      "tenant_id": "tenant_demo",
+      "from_state": "RECONCILE_PENDING",
+      "to_state": "COMPLETED",
+      "reason_code": "readback_confirmed",
+      "committed_at_utc": "2026-03-08T10:03:00Z"
+    }
+  ],
+  "receipts": [
+    {
+      "receipt_id": "rcpt_indoubt_001",
+      "trace_id": "trace_indoubt_001",
+      "tenant_id": "tenant_demo",
+      "root_digest": "blake3-256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sealed_at_utc": "2026-03-08T10:03:01Z"
+    }
+  ],
+  "in_doubt_records": [
+    {
+      "trace_id": "trace_indoubt_001",
+      "tenant_id": "tenant_demo",
+      "action_digest": "blake3-256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "reason": "provider ambiguous",
+      "state": "IN_DOUBT",
+      "emitted_at_utc": "2026-03-08T10:01:01Z"
+    }
+  ],
+  "reconcile_results": [
+    {
+      "trace_id": "trace_indoubt_001",
+      "tenant_id": "tenant_demo",
+      "action_digest": "blake3-256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "provider_receipt_digest": "blake3-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "readback_digest": "blake3-256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "resolution": "COMPLETED",
+      "resolved_at_utc": "2026-03-08T10:03:00Z"
+    }
+  ]
+}

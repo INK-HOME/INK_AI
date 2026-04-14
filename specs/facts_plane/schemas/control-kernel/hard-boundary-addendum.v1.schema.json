@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/hard-boundary-addendum/v1",
+  "title": "HardBoundary Addendum v1 — Assumptions + Supply Chain",
+  "description": "Typed, auditable declaration of the deployment assumptions from THREAT_MODEL.md and the supply-chain hardening status from SBOM.md. Makes doc-only assumptions into verifier-checkable fields that can be bound into receipts and evidence bundles. A STRICT deployment must have all assumptions=true and supply_chain controls satisfied. Addendum is either inlined into HardBoundaryValidationResult or stored separately (referenced by addendum_digest).",
+
+  "type": "object",
+  "required": ["assumptions", "supply_chain"],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "assumptions": {
+      "type": "object",
+      "description": "Operational assumptions that must hold for the THREAT_MODEL controls to be valid. Each boolean asserts the assumption is met in this deployment. An assumption set to false in STRICT profile is a verifier FAIL.",
+      "required": [
+        "egress_firewall_enforced",
+        "gateway_signing_key_protected",
+        "idp_trusted",
+        "disk_encryption_enabled",
+        "clock_integrity_protected"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "egress_firewall_enforced": {
+          "type": "boolean",
+          "description": "Network egress deny-all is active for agent workloads. Without this, IAM is the only bypass defense (THREAT_MODEL assumption 1)."
+        },
+        "gateway_signing_key_protected": {
+          "type": "boolean",
+          "description": "DOTINK_SECRET_KEY is stored in KMS/HSM, not in env var or filesystem. If false, receipts can be forged (THREAT_MODEL assumption 2)."
+        },
+        "idp_trusted": {
+          "type": "boolean",
+          "description": "Identity provider used for break-glass approver verification is not compromised (THREAT_MODEL assumption 3)."
+        },
+        "disk_encryption_enabled": {
+          "type": "boolean",
+          "description": "Audit log storage volume is encrypted at rest (THREAT_MODEL assumption 4). Required for audit payload confidentiality."
+        },
+        "clock_integrity_protected": {
+          "type": "boolean",
+          "description": "NTP with authentication (or equivalent) is configured. Break-glass expiry depends on clock integrity (THREAT_MODEL assumption 5)."
+        },
+        "evidence": {
+          "type": "object",
+          "description": "Optional machine-verifiable evidence for each assumption.",
+          "additionalProperties": false,
+          "properties": {
+            "egress_firewall_ref":    { "type": "string", "description": "Reference to NetworkPolicy/security-group config artifact." },
+            "kms_key_ref":            { "type": "string", "description": "Reference to KMS key ARN or Vault path for the signing key." },
+            "idp_config_ref":         { "type": "string", "description": "Reference to IdP OIDC/SAML config or trust document." },
+            "disk_encryption_ref":    { "type": "string", "description": "Reference to storage encryption config or attestation." },
+            "ntp_config_ref":         { "type": "string", "description": "Reference to NTP with auth config or chrony/timesyncd attestation." }
+          }
+        }
+      }
+    },
+
+    "supply_chain": {
+      "type": "object",
+      "description": "Supply chain hardening controls from SBOM.md. Tracks action items as typed booleans so security teams can audit status without reading a doc.",
+      "required": [
+        "sbom_digest",
+        "base_image_pinned_to_digest",
+        "ci_vuln_scans_enabled",
+        "release_signed",
+        "attestation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sbom_digest": {
+          "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest",
+          "description": "Content digest of the SBOM document (SBOM.md or machine-readable CycloneDX JSON) for this release."
+        },
+        "sbom_format": {
+          "type": "string",
+          "enum": ["SBOM_LITE_MD", "CYCLONEDX_JSON", "SPDX_JSON"],
+          "description": "Format of the SBOM document referenced by sbom_digest."
+        },
+        "base_image_pinned_to_digest": {
+          "type": "boolean",
+          "description": "Dockerfile FROM uses sha256 digest, not a mutable tag (e.g. python:3.11-slim@sha256:...). SBOM action item 2."
+        },
+        "base_image_digest": {
+          "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest",
+          "description": "sha256 digest of the base container image. Populated when base_image_pinned_to_digest=true."
+        },
+        "requirements_pinned": {
+          "type": "boolean",
+          "description": "Python packages declared in requirements.txt with exact versions (not ranges). SBOM action item 1."
+        },
+        "ci_vuln_scans_enabled": {
+          "type": "boolean",
+          "description": "pip-audit / cargo audit / govulncheck run in CI on every build. SBOM action item 3."
+        },
+        "ci_vuln_scan_ref": {
+          "type": "string",
+          "description": "Reference to the latest CI vulnerability scan report artifact."
+        },
+        "release_signed": {
+          "type": "boolean",
+          "description": "Release artifacts signed with cosign/sigstore. SBOM action item 4."
+        },
+        "attestation": {
+          "type": "object",
+          "description": "Build provenance attestation details. attestor=NONE is valid for DEV/ENTERPRISE; STRICT deployments should target COSIGN or SLSA.",
+          "required": ["attestor", "artifact_digests"],
+          "additionalProperties": false,
+          "properties": {
+            "attestor": {
+              "type": "string",
+              "enum": ["COSIGN", "SLSA", "NONE"],
+              "description": "COSIGN=cosign-signed OCI image; SLSA=SLSA provenance level 2+; NONE=not yet implemented."
+            },
+            "slsa_level": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4,
+              "description": "SLSA provenance level (1–4). Only meaningful when attestor=SLSA."
+            },
+            "artifact_digests": {
+              "type": "array",
+              "minItems": 0,
+              "description": "Content digests of the signed/attested release artifacts.",
+              "items": { "$ref": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/common/v1#/$defs/digest" }
+            },
+            "attestation_uri": {
+              "type": "string",
+              "description": "URI to the attestation bundle (OCI manifest ref, Rekor log entry, etc.)."
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "allOf": [
+    {
+      "description": "egress_firewall_enforced=false is a hard FAIL — the boundary is not real without it.",
+      "if": {
+        "properties": {
+          "assumptions": {
+            "properties": { "egress_firewall_enforced": { "const": false } },
+            "required": ["egress_firewall_enforced"]
+          }
+        }
+      },
+      "then": { "not": {} }
+    },
+    {
+      "description": "gateway_signing_key_protected=false means receipts can be forged — hard FAIL.",
+      "if": {
+        "properties": {
+          "assumptions": {
+            "properties": { "gateway_signing_key_protected": { "const": false } },
+            "required": ["gateway_signing_key_protected"]
+          }
+        }
+      },
+      "then": { "not": {} }
+    }
+  ]
+}

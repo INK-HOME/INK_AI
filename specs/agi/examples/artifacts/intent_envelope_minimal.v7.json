@@ -1,0 +1,79 @@
+{
+  "schema_version": "agi.intent_envelope.v7",
+  "envelope_id": "iev_example_v6",
+  "authority_clock": {
+    "epoch": 1,
+    "sequence": 1,
+    "issued_at": "2026-04-08T00:00:00Z"
+  },
+  "intent": {
+    "intent_type": "state_change_request",
+    "intent_class": "high_impact",
+    "requested_action": "issue_execution_token",
+    "action_semantics": {
+      "tool_name": "calendar.create_event",
+      "tool_method": "create_event",
+      "args_digest": "blake3:args123",
+      "intended_effect_digest": "blake3:effect123"
+    },
+    "target_scope": {
+      "primary_targets": [
+        {
+          "layer": "L1",
+          "surface": "calendar",
+          "resource_ref": "calendar.primary"
+        }
+      ],
+      "declared_layer_contacts": [
+        "L1"
+      ]
+    },
+    "goal_statement": "Create an approved meeting event"
+  },
+  "state_bindings": {
+    "reasoning_time_snapshot": {
+      "layer1_snapshot_id": "l1s_1",
+      "layer1_snapshot_digest": "blake3:snap1",
+      "captured_at": "2026-04-08T00:00:00Z",
+      "freshness_ttl_ms": 5000
+    },
+    "declared_facts": [],
+    "assumptions": [],
+    "unknowns": []
+  },
+  "protected_surface_analysis": {
+    "touches_layer0": false,
+    "touches_layer1": true,
+    "touches_execution_authority": true,
+    "treason_risk_flags": []
+  },
+  "constraints": {
+    "must_fail_closed": true,
+    "must_revalidate_layer1_before_execution": true,
+    "must_match_args_digest_exactly": true,
+    "must_match_intended_effect_digest_exactly": true,
+    "max_token_validity_ms": 2000,
+    "execution_scope_lock": true
+  },
+  "uncertainty": {
+    "has_material_uncertainty": false,
+    "uncertainty_reasons": [],
+    "missing_inputs": [],
+    "contention_refs": []
+  },
+  "lineage": {
+    "parent_envelope_id": null,
+    "supersedes_envelope_id": null,
+    "retry_of_envelope_id": null
+  },
+  "seal": {
+    "artifact_class": "intent_envelope",
+    "payload_digest": "compat-sha3_256:cae3b60ca6862e3694c019d79f1bc5f2656c45a7fc4784d6b2b2dfdfee07817d",
+    "signature_alg": "Ed25519",
+    "signed_by": "layer2_key",
+    "key_id": "layer2_key",
+    "signature": "+wP2toW5PcIUShL2HhhL3I7xLFJ0Iv20ZWbXuwBI1BvTM5LKA52/7gF4WxkbstYYNJrGDV3HJm32q2Mdaup0Dg==",
+    "canonical_backend": "fixture-build",
+    "signature_source": "fixture-generated"
+  }
+}

@@ -1,0 +1,562 @@
+- transition_id: T001
+  current_state: NONE
+  event: ENVELOPE_SEALED
+  preconditions:
+  - envelope.schema_valid == true
+  - envelope.canonicalization_valid == true
+  - envelope.signature_valid == true
+  - envelope.required_fields_complete == true
+  - envelope.reasoning_snapshot_ref_present == true
+  - envelope.mutable == false
+  emitted_artifact: IntentEnvelope
+  artifact_requirements:
+  - envelope.state == SEALED
+  - envelope.payload_digest_present == true
+  - envelope.envelope_id_present == true
+  next_state: PROPOSED
+  illegal_if:
+  - envelope.is_duplicate_replay_within_window == true
+  - envelope.declared_target_scope_illegal == true
+  audit_reason_codes:
+  - ENVELOPE_ACCEPTED
+  - CANONICAL_SEAL_VALID
+  - PROPOSAL_CORRIDOR_OPENED
+- transition_id: T002
+  current_state: PROPOSED
+  event: AUTHORITY_REVIEW_STARTED
+  preconditions:
+  - envelope.exists == true
+  - envelope.state == SEALED
+  - envelope.superseded == false
+  - envelope.expired == false
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: UNDER_AUTHORITY_REVIEW
+  illegal_if:
+  - envelope.ingest_rejected == true
+  - corridor.locked_by_quarantine == true
+  audit_reason_codes:
+  - AUTHORITY_REVIEW_OPENED
+- transition_id: T003
+  current_state: UNDER_AUTHORITY_REVIEW
+  event: AUTHORITY_ALLOW_ISSUED
+  preconditions:
+  - authority_basis.verified_layer1_snapshot_present == true
+  - authority_basis.policy_pack_pinned == true
+  - authority_basis.constitution_digest_pinned == true
+  - envelope_digest_bound_exactly == true
+  - requested_effect_digest_present == true
+  - execution_guard.mode in [OCC, LEASE, SERIALIZABLE_TXN, NONE]
+  emitted_artifact: AuthorityDecision
+  artifact_requirements:
+  - decision.outcome == ALLOW
+  - decision.signature_valid == true
+  - decision.envelope_digest == envelope.payload_digest
+  - decision.token_issued == true
+  - decision.execution_guard.mode_present == true
+  next_state: AUTHORIZED
+  illegal_if:
+  - decision.bound_effect_digest_missing == true
+  - decision.token_issued != true
+  audit_reason_codes:
+  - AUTHORITY_ALLOW
+  - STATE_VERIFIED
+  - TOKEN_MINTED
+- transition_id: T004
+  current_state: UNDER_AUTHORITY_REVIEW
+  event: AUTHORITY_DENY_ISSUED
+  preconditions:
+  - authority_basis.verified_layer1_snapshot_present == true
+  - denial_basis_complete == true
+  - envelope_digest_bound_exactly == true
+  emitted_artifact: AuthorityDecision
+  artifact_requirements:
+  - decision.outcome == DENY
+  - decision.token_issued == false
+  - decision.signature_valid == true
+  next_state: DENIED
+  illegal_if:
+  - decision.token_issued == true
+  audit_reason_codes:
+  - AUTHORITY_DENY
+- transition_id: T005
+  current_state: UNDER_AUTHORITY_REVIEW
+  event: AUTHORITY_REWRITE_ISSUED
+  preconditions:
+  - transformable_form_exists == true
+  - rewrite_constraints_explicit == true
+  - envelope_digest_bound_exactly == true
+  emitted_artifact: AuthorityDecision
+  artifact_requirements:
+  - decision.outcome == REWRITE
+  - decision.token_issued == false
+  - decision.rewrite_constraints_present == true
+  next_state: REWRITE_REQUIRED
+  illegal_if:
+  - original_envelope_mutated == true
+  audit_reason_codes:
+  - AUTHORITY_REWRITE
+- transition_id: T006
+  current_state: UNDER_AUTHORITY_REVIEW
+  event: AUTHORITY_ESCALATE_ISSUED
+  preconditions:
+  - escalation_basis_valid == true
+  - envelope_digest_bound_exactly == true
+  emitted_artifact: AuthorityDecision
+  artifact_requirements:
+  - decision.outcome == ESCALATE
+  - decision.token_issued == false
+  - decision.review_requirements_present == true
+  next_state: ESCALATED
+  illegal_if:
+  - execution_token_exists == true
+  audit_reason_codes:
+  - AUTHORITY_ESCALATE
+- transition_id: T007
+  current_state: UNDER_AUTHORITY_REVIEW
+  event: AUTHORITY_TREASON_ISSUED
+  preconditions:
+  - protected_surface_offense_threshold_met == true
+  - offense_basis_present == true
+  - envelope_digest_bound_exactly == true
+  emitted_artifact: AuthorityDecision
+  artifact_requirements:
+  - decision.outcome == TREASON
+  - decision.token_issued == false
+  - decision.treason_assessment_present == true
+  next_state: TREASON_FLAGGED
+  illegal_if:
+  - execution_token_exists == true
+  audit_reason_codes:
+  - AUTHORITY_TREASON
+  - PROTECTED_STATE_OFFENSE
+- transition_id: T008
+  current_state: AUTHORIZED
+  event: CANDIDATE_PATH_BOUND
+  preconditions:
+  - decision.outcome == ALLOW
+  - token.exists == true
+  - token.expired == false
+  - token.replayed == false
+  - candidate.args_digest_present == true
+  - candidate.effect_digest_present == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: CERTIFICATION_PENDING
+  illegal_if:
+  - candidate.path_not_resolvable == true
+  - candidate.scope_already_exceeds_decision == true
+  audit_reason_codes:
+  - CANDIDATE_BOUND
+- transition_id: T009
+  current_state: CERTIFICATION_PENDING
+  event: INTEGRITY_CERTIFIED
+  preconditions:
+  - candidate.args_digest == decision.required_args_digest
+  - candidate.effect_digest == decision.required_effect_digest
+  - current_layer1_revalidation_passed == true
+  - token.expired == false
+  - token.replayed == false
+  - protected_surface_scope_match == true
+  - forbidden_side_effect_detected == false
+  - material_drift_detected == false
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == CERTIFIED
+  - certification.envelope_digest == envelope.payload_digest
+  - certification.decision_digest == decision.payload_digest
+  - certification.edge_validity.execution_guard_mode_present == true
+  - certification.reconciliation_policy.present == true
+  next_state: CERTIFIED
+  illegal_if:
+  - required_revalidation_missing == true
+  - undeclared_surface_contact_detected == true
+  audit_reason_codes:
+  - INTEGRITY_CERTIFIED
+  - NO_MATERIAL_DRIFT
+  - SCOPE_CONFIRMED
+- transition_id: T010
+  current_state: CERTIFICATION_PENDING
+  event: INTEGRITY_BLOCKED
+  preconditions:
+  - conformance_failure_detected == true
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == BLOCKED
+  - certification.reason_codes_nonempty == true
+  next_state: BLOCKED_BY_INTEGRITY
+  illegal_if:
+  - corridor.continues_to_execution == true
+  audit_reason_codes:
+  - INTEGRITY_BLOCKED
+- transition_id: T011
+  current_state: CERTIFICATION_PENDING
+  event: INTEGRITY_REAUTH_REQUIRED
+  preconditions:
+  - material_state_drift_detected == true
+  - hostile_pattern_threshold_met == false
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == REQUIRES_REAUTH
+  - certification.reason_codes_nonempty == true
+  next_state: REAUTH_REQUIRED
+  illegal_if:
+  - old_token_reused == true
+  audit_reason_codes:
+  - REAUTH_REQUIRED
+  - MATERIAL_STATE_DRIFT
+- transition_id: T012
+  current_state: CERTIFICATION_PENDING
+  event: INTEGRITY_ESCALATE
+  preconditions:
+  - integrity_review_cannot_complete_safely == true
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == ESCALATE
+  - certification.review_requirements_present == true
+  next_state: ESCALATED
+  illegal_if:
+  - execution_starts == true
+  audit_reason_codes:
+  - INTEGRITY_ESCALATE
+- transition_id: T013
+  current_state: CERTIFICATION_PENDING
+  event: INTEGRITY_RESET_REQUIRED
+  preconditions:
+  - reset_threshold_met == true
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == RESET_REQUIRED
+  - certification.reset_scope_present == true
+  next_state: RESET_REQUIRED
+  illegal_if:
+  - token_remains_usable == true
+  audit_reason_codes:
+  - RESET_REQUIRED
+  - CONTAINMENT_TRIGGERED
+- transition_id: T014A
+  current_state: CERTIFIED
+  event: EXECUTION_READY_CONFIRMED
+  preconditions:
+  - certification.signature_valid == true
+  - certification.superseded == false
+  - token.exists == true
+  - token.expired == false
+  - candidate.digest == certification.bound_candidate_digest
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: EXECUTION_READY
+  illegal_if:
+  - corridor.incident_lock == true
+  audit_reason_codes:
+  - EXECUTION_READY
+- transition_id: T014B
+  current_state: EXECUTION_READY
+  event: EXECUTION_STARTED
+  preconditions:
+  - token.expired == false
+  - token.replayed == false
+  - candidate.digest == certification.bound_candidate_digest
+  - edge_revalidation_passed == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: EXECUTING
+  illegal_if:
+  - execution_guard.mode == OCC and current_state_version_digest != certification.edge_validity.certified_state_version_digest
+  - execution_guard.mode == LEASE and lease_valid_now != true
+  - execution_guard.mode == SERIALIZABLE_TXN and tx_context_valid != true
+  audit_reason_codes:
+  - EXECUTION_STARTED
+  - EDGE_REVALIDATION_PASSED
+- transition_id: T014C
+  current_state: EXECUTION_READY
+  event: EDGE_REVALIDATION_FAILED_STALE_STATE
+  preconditions:
+  - edge_revalidation_passed == false
+  - hostile_pattern_detected == false
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: REAUTH_REQUIRED
+  illegal_if: []
+  audit_reason_codes:
+  - REAUTH_REQUIRED
+  - EDGE_STATE_DRIFT
+- transition_id: T014D
+  current_state: EXECUTION_READY
+  event: EDGE_REVALIDATION_FAILED_ESCALATE
+  preconditions:
+  - edge_revalidation_passed == false
+  - conflict_or_ambiguity_requires_review == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: ESCALATED
+  illegal_if: []
+  audit_reason_codes:
+  - EDGE_ESCALATE
+- transition_id: T014E
+  current_state: EXECUTION_READY
+  event: EDGE_REVALIDATION_FAILED_RESET
+  preconditions:
+  - edge_revalidation_passed == false
+  - hostile_pattern_detected == true
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == RESET_REQUIRED
+  next_state: RESET_REQUIRED
+  illegal_if: []
+  audit_reason_codes:
+  - RESET_REQUIRED
+  - EDGE_HOSTILITY_DETECTED
+- transition_id: T015
+  current_state: EXECUTING
+  event: TERMINAL_OBSERVATION_REACHED
+  preconditions:
+  - tool_class_result_sufficiency_met == true
+  - terminal_execution_status_known == true
+  emitted_artifact: ResultReceipt
+  artifact_requirements:
+  - receipt.envelope_digest == envelope.payload_digest
+  - receipt.decision_digest == decision.payload_digest
+  - receipt.certification_digest == certification.payload_digest
+  - receipt.execution_corridor_id_present == true
+  - receipt.idempotency_key_present == true
+  - receipt.signature_valid == true
+  next_state: RESULT_OBSERVED
+  illegal_if:
+  - only_provider_ack_exists_for_transactional_tool == true
+  - terminal_readback_required_but_missing == true
+  audit_reason_codes:
+  - RESULT_RECEIPT_EMITTED
+- transition_id: T015A
+  current_state: EXECUTING
+  event: EXECUTION_UNCERTAINTY_TRIGGERED
+  preconditions:
+  - heartbeat_lost == true or execution_ttl_expired == true or commit_status_unknown
+    == true or receipt_write_missing == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: IN_DOUBT
+  illegal_if: []
+  audit_reason_codes:
+  - ENTERED_IN_DOUBT
+- transition_id: T015B
+  current_state: IN_DOUBT
+  event: RECONCILIATION_STARTED
+  preconditions:
+  - reconciliation_policy_present == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: RECONCILING
+  illegal_if: []
+  audit_reason_codes:
+  - RECONCILIATION_STARTED
+- transition_id: T015C
+  current_state: RECONCILING
+  event: RECONCILIATION_RESOLVED
+  preconditions:
+  - reconciliation_evidence_sufficient == true
+  emitted_artifact: ReconcileReceipt
+  artifact_requirements:
+  - reconcile.resolution.resolution_class in [RECONCILED_SUCCESS, RECONCILED_FAILURE,
+    COMPENSATED, UNKNOWN_BOUNDED]
+  - reconcile.closure.resulting_result_receipt_ref != null
+  next_state: RESULT_OBSERVED
+  illegal_if:
+  - result_receipt.false_certainty == true
+  audit_reason_codes:
+  - RECONCILE_RECEIPT_EMITTED
+- transition_id: T015D
+  current_state: IN_DOUBT
+  event: INDOUBT_ESCALATE
+  preconditions:
+  - policy_requires_external_intervention == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: ESCALATED
+  illegal_if: []
+  audit_reason_codes:
+  - INDOUBT_ESCALATE
+- transition_id: T015E
+  current_state: IN_DOUBT
+  event: INDOUBT_RESET_REQUIRED
+  preconditions:
+  - uncertainty_became_containment_incident == true
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == RESET_REQUIRED
+  next_state: RESET_REQUIRED
+  illegal_if: []
+  audit_reason_codes:
+  - INDOUBT_RESET_REQUIRED
+- transition_id: T015F
+  current_state: RECONCILING
+  event: RECONCILIATION_ESCALATE
+  preconditions:
+  - automation_cannot_finish_reconciliation == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: ESCALATED
+  illegal_if: []
+  audit_reason_codes:
+  - RECONCILIATION_ESCALATE
+- transition_id: T015G
+  current_state: RECONCILING
+  event: RECONCILIATION_RESET_REQUIRED
+  preconditions:
+  - reconciliation_detected_containment_incident == true
+  emitted_artifact: IntegrityCertification
+  artifact_requirements:
+  - certification.outcome == RESET_REQUIRED
+  next_state: RESET_REQUIRED
+  illegal_if: []
+  audit_reason_codes:
+  - RECONCILIATION_RESET_REQUIRED
+- transition_id: T016
+  current_state: RESULT_OBSERVED
+  event: RESULT_CLASSIFIED_SUCCESS
+  preconditions:
+  - receipt.execution_status in [SUCCEEDED, NOOP_IDEMPOTENT]
+  - receipt.realized_effect_class in [INTENDED_EFFECT_REALIZED]
+  - receipt.forbidden_side_effects_detected == false
+  - receipt.material_divergence_detected == false
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: TERMINAL_SUCCESS
+  illegal_if:
+  - receipt.realized_effect_class == EFFECT_UNKNOWN_BOUNDED
+  - receipt.realized_effect_class == PARTIAL_EFFECT_OBSERVED
+  - receipt.compensation_required == true and receipt.compensation_status != COMPLETE
+  audit_reason_codes:
+  - TERMINAL_SUCCESS
+- transition_id: T017
+  current_state: RESULT_OBSERVED
+  event: RESULT_CLASSIFIED_FAILURE
+  preconditions:
+  - receipt.execution_status in [FAILED, ABORTED, TIMED_OUT, COMPENSATED, SUCCEEDED]
+  - receipt.realized_effect_class in [NO_EFFECT_OBSERVED, PARTIAL_EFFECT_OBSERVED,
+    UNINTENDED_EFFECT_OBSERVED, EFFECT_UNKNOWN_BOUNDED, COMPENSATED_EFFECT_STATE]
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: TERMINAL_FAILURE
+  illegal_if:
+  - receipt.realized_effect_class == INTENDED_EFFECT_REALIZED and failure_claimed
+    == true
+  audit_reason_codes:
+  - TERMINAL_FAILURE
+- transition_id: T018
+  current_state: TERMINAL_SUCCESS
+  event: REPLAY_PROOF_PASS
+  preconditions:
+  - required_artifacts_present == true
+  - signatures_valid == true
+  - transition_legality_verified == true
+  - digest_chain_consistent == true
+  - contradiction_checks_clean == true
+  emitted_artifact: ReplayProof
+  artifact_requirements:
+  - proof.outcome == PASS
+  - proof.bound_artifacts_complete == true
+  - proof.signature_valid == true
+  next_state: PROVED
+  illegal_if:
+  - result_receipt_missing == true
+  - illegal_transition_detected == true
+  audit_reason_codes:
+  - REPLAY_PASS
+- transition_id: T019
+  current_state: TERMINAL_FAILURE
+  event: REPLAY_PROOF_PASS
+  preconditions:
+  - required_artifacts_present == true
+  - signatures_valid == true
+  - transition_legality_verified == true
+  - digest_chain_consistent == true
+  - contradiction_checks_clean == true
+  emitted_artifact: ReplayProof
+  artifact_requirements:
+  - proof.outcome == PASS
+  - proof.bound_artifacts_complete == true
+  next_state: PROVED
+  illegal_if:
+  - failure_path_contains_illegal_shortcut == true
+  audit_reason_codes:
+  - REPLAY_PASS
+  - CONSTITUTIONAL_FAILURE_PATH_VALID
+- transition_id: T020
+  current_state: DENIED
+  event: NEW_ENVELOPE_SUPERSEDES
+  preconditions:
+  - new_envelope.state == SEALED
+  - new_envelope.lineage.parent_envelope_id == envelope.envelope_id
+  - old_envelope_immutable == true
+  emitted_artifact: IntentEnvelope
+  artifact_requirements:
+  - new_envelope.signature_valid == true
+  next_state: PROPOSED
+  illegal_if:
+  - old_corridor_reopened_without_new_envelope == true
+  audit_reason_codes:
+  - NEW_ENVELOPE_AFTER_DENIAL
+- transition_id: T021
+  current_state: REWRITE_REQUIRED
+  event: REWRITTEN_ENVELOPE_SEALED
+  preconditions:
+  - new_envelope.state == SEALED
+  - new_envelope.lineage.supersedes_envelope_id == envelope.envelope_id
+  - rewrite_constraints_satisfied == true
+  emitted_artifact: IntentEnvelope
+  artifact_requirements:
+  - new_envelope.signature_valid == true
+  next_state: PROPOSED
+  illegal_if:
+  - original_envelope_modified == true
+  audit_reason_codes:
+  - REWRITTEN_ENVELOPE_ACCEPTED
+- transition_id: T022
+  current_state: REAUTH_REQUIRED
+  event: FRESH_AUTHORITY_PATH_STARTED
+  preconditions:
+  - fresh_verified_layer1_basis_present == true
+  - stale_token_marked_unusable == true
+  emitted_artifact: null
+  artifact_requirements: []
+  next_state: UNDER_AUTHORITY_REVIEW
+  illegal_if:
+  - stale_token_reused == true
+  audit_reason_codes:
+  - FRESH_AUTHORITY_REVIEW_STARTED
+- transition_id: T023
+  current_state: RESET_REQUIRED
+  event: RESET_COMPLETED_AND_NEW_PATH_STARTED
+  preconditions:
+  - reset_artifact_present == true
+  - compromised_corridor_closed == true
+  - new_envelope.state == SEALED
+  emitted_artifact: IntentEnvelope
+  artifact_requirements:
+  - new_envelope.signature_valid == true
+  next_state: PROPOSED
+  illegal_if:
+  - prior_token_reused == true
+  - corridor_execution_resumed_without_reset == true
+  audit_reason_codes:
+  - RESET_COMPLETED
+  - NEW_PATH_AFTER_RESET
+- transition_id: T024
+  current_state: TREASON_FLAGGED
+  event: INCIDENT_CONTAINED_AND_NEW_PATH_STARTED
+  preconditions:
+  - incident_artifact_present == true
+  - containment_complete == true
+  - constitution_allows_future_interaction == true
+  - new_envelope.state == SEALED
+  emitted_artifact: IntentEnvelope
+  artifact_requirements:
+  - new_envelope.signature_valid == true
+  next_state: PROPOSED
+  illegal_if:
+  - same_corridor_reauthorized == true
+  - treason_flagged_token_reused == true
+  audit_reason_codes:
+  - INCIDENT_CONTAINED
+  - NEW_PATH_AFTER_TREASON

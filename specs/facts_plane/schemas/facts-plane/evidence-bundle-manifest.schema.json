@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evidence-bundle-manifest.schema.json",
+  "title": "EvidenceBundleManifest",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "trace_id",
+    "tenant_id",
+    "items",
+    "bundle_digest"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "bundle_digest": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

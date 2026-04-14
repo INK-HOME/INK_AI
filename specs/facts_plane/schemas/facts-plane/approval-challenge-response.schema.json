@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "approval-challenge-response.schema.json",
+  "title": "ApprovalChallengeResponse",
+  "type": "object",
+  "required": [
+    "challenge_id",
+    "approval_id",
+    "question_id",
+    "response",
+    "answered_at_utc"
+  ],
+  "properties": {
+    "challenge_id": {
+      "type": "string"
+    },
+    "approval_id": {
+      "type": "string"
+    },
+    "question_id": {
+      "type": "string"
+    },
+    "response": {
+      "type": "string"
+    },
+    "answered_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

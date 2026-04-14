@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/control-kernel/intent-receipt/v1",
+  "title": "dot.ink Intent Receipt",
+  "description": "Signed receipt returned by POST /v1/intent. The receipt_sig field is an HMAC-SHA256 over the canonical JSON of the receipt body, keyed with DOTINK_SECRET_KEY. Verifiers can confirm the receipt was issued by a dot.ink node that holds the shared secret. Updated in v3 to include lifecycle_state, tool_class, readback_status, break_glass_active, hard_boundary reference, and audit chain fields.",
+  "type": "object",
+  "required": [
+    "intent_id",
+    "seq",
+    "status",
+    "policy_id",
+    "policy_epoch",
+    "receipt_sig"
+  ],
+  "properties": {
+    "intent_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Monotonically increasing sequence number within this server instance"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "blocked",
+        "pending_review"
+      ],
+      "description": "approved=intent executed and in WAL, blocked=policy violation, pending_review=human approval required"
+    },
+    "policy_id": {
+      "type": "string"
+    },
+    "policy_epoch": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "action_type": {
+      "type": "string"
+    },
+    "wal_digest": {
+      "type": "string",
+      "pattern": "^blake3:[0-9a-f]{64}$",
+      "description": "Digest of the WAL entry created for this intent (absent if blocked or pending_review)"
+    },
+    "rule_id": {
+      "type": "string",
+      "description": "Rule that triggered the block or review (absent if approved)"
+    },
+    "rule_desc": {
+      "type": "string",
+      "description": "Human-readable rule description"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "receipt_sig": {
+      "type": "string",
+      "description": "HMAC-SHA256 hex digest over canonical JSON of the receipt body"
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "BLOCKED",
+        "PENDING_REVIEW",
+        "RECONCILE_PENDING",
+        "DEAD"
+      ],
+      "description": "Decision lifecycle position. Added in v3."
+    },
+    "tool_class": {
+      "type": "string",
+      "enum": [
+        "transactional",
+        "best-effort",
+        "irreversible"
+      ],
+      "description": "DTM side-effect class of the adapter executing this intent. Added in v3."
+    },
+    "readback_status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "mismatch",
+        "skipped"
+      ],
+      "description": "Post-execution readback verification result. mismatch triggers autonomy clamp. Added in v3."
+    },
+    "break_glass_active": {
+      "type": "boolean",
+      "description": "True if a break-glass window was active when this receipt was issued. Verifier flags these. Added in v3."
+    },
+    "hard_boundary": {
+      "type": "object",
+      "description": "Reference to the HardBoundaryValidationResult active at receipt time. Added in v3.",
+      "properties": {
+        "validation_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "validation_digest": {
+          "type": "string",
+          "pattern": "^(sha256|sha512|blake3):[0-9a-f]{64,128}$"
+        }
+      },
+      "required": [
+        "validation_id",
+        "validation_digest"
+      ],
+      "additionalProperties": false
+    },
+    "schema_version": {
+      "type": "integer",
+      "description": "Receipt schema version. 1=original, 2=A+ chain fields, 3=v3 boundary+lifecycle fields."
+    },
+    "schema_digest": {
+      "type": "string",
+      "description": "Hex digest of the schema file used to validate this receipt."
+    },
+    "audit_chain_seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Position in the tamper-evident audit chain."
+    },
+    "prev_digest": {
+      "type": "string",
+      "description": "Digest of the previous audit chain entry."
+    },
+    "audit_digest": {
+      "type": "string",
+      "description": "Self-digest of this chain entry."
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facts-plane.github.io/facts-plane-spec/schemas/facts-plane/promotion-receipt.schema.json",
+  "title": "PromotionReceipt",
+  "type": "object",
+  "required": [
+    "promotion_id",
+    "source_artifact_id",
+    "promotion_digest",
+    "verified_supporting_evidence_ids",
+    "created_at_utc"
+  ],
+  "properties": {
+    "promotion_id": { "type": "string", "minLength": 1 },
+    "source_artifact_id": { "type": "string", "minLength": 1 },
+    "promotion_digest": { "$ref": "common.schema.json#/$defs/DigestString" },
+    "verified_supporting_evidence_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "created_at_utc": { "$ref": "common.schema.json#/$defs/UtcTimestamp" }
+  },
+  "additionalProperties": false
+}
