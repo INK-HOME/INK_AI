@@ -9,8 +9,8 @@ Physically bonded in the steel rack unit.
 
 **Status: ProofCore ACTIVE | Compiler Doctrine Locked | Canonical Profile Enforced**
 
-- Default profile: **proof_minimum** — objective floor only. Customer extensions rejected.
-- Extended profile: subjective overlays hashed and isolated above the floor.
+- Default profile: — objective floor only. 
+- Extended profile: subjective overlays customers domain hashed and isolated above the floor.
 - Runtime: Write-before-act. Explicit states (PASS/DENY/BLOCKED/IN_DOUBT/RECONCILE_PENDING). Fail-closed.
 - Proof: BLAKE3 + Ed25519 + replayable ProofBundles. Offline verifiable.
 
