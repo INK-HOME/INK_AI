@@ -1,24 +1,27 @@
-# .INK — Offensive Governance Engine
+## .ink — Provable Execution Membrane for High-Stakes AI
 
-**Execution Authority Membrane for High-Stakes AI**
+.ink is a control layer for AI systems that take real-world actions.
 
-Compiles the objective governance floor that must be proven.  
-Enforces it at the runtime boundary via the True Membrane.  
-Proves every action with native Rust ProofCore.  
-Physically bonded in the steel rack unit.
+It does not treat model output as authority.
+It requires a governed path from proposed action to authorized execution:
+explicit envelope, bounded approval, durable pre-action state, and a replayable proof bundle.
 
-**Status: ProofCore ACTIVE | Compiler Doctrine Locked | Canonical Profile Enforced**
+This repository is the public proof surface for.ink.
+It contains public doctrine, constitutional schemas, example bundles, and an offline verifier.
+The private commercial runtime is intentionally not shipped here.
 
-- Default profile: — objective floor only. 
-- Extended profile: subjective overlays customers domain hashed and isolated above the floor.
-- Runtime: Write-before-act. Explicit states (PASS/DENY/BLOCKED/IN_DOUBT/RECONCILE_PENDING). Fail-closed.
-- Proof: BLAKE3 + Ed25519 + replayable ProofBundles. Offline verifiable.
+## Why it exists
 
-**Live ProofCore Status**
-```json
-{
-  "proofcore_required": true,
-  "proofcore_available": true,
-  "proofcore_executed": true,
-  "status": "PASS"
-}
+Most AI systems fail at the boundary where soft reasoning meets irreversible action.
+A model can be helpful, fast, and usually correct while still being structurally unsafe to trust with money movement, record mutation, access changes, or operational control.
+
+dot.ink exists to solve that boundary problem.
+
+## Five-minute proof
+
+```bash
+cd tools/fp_verify
+python -m pip install -e .
+fp-verify ../specs/facts_plane/examples/happy_path_payment_release/bundle.json
+fp-verify ../specs/facts_plane/examples/ambiguous_provider_result/bundle.json
+fp-verify ../specs/facts_plane/examples/rogue_wire_transfer/bundle.json
